@@ -19,8 +19,13 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
+        'phone',
+        'role',
+        'image',
+        'status',
     ];
 
     /**
@@ -42,4 +47,29 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'username';
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isNotPrincipal()
+    {
+        return $this->role !== 'kepala_sekolah';
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+        return $this->image ? asset('storage/' . $this->image) : asset('assets/images/profile/user-1.jpg');
+    }
+
+    public function getStatusColorAttribute()
+    {
+        return $this->status == 'active' ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-muted';
+    }
 }

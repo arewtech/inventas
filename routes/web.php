@@ -1,6 +1,16 @@
 <?php
 
+use App\Http\Controllers\AssetBorrowingController;
+use App\Http\Controllers\FrontsideController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\AssetController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LocationController;
+use App\Http\Controllers\OperatorController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +23,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::redirect('/', '/dashboard');
+Route::prefix('/dashboard')->middleware('auth')->group(function () {
+    Route::get('/', DashboardController::class)->name('dashboard');
+    Route::resource('categories', CategoryController::class);
+    Route::resource('locations', LocationController::class);
+    Route::resource('assets', AssetController::class);
+    Route::get('/asset-borrowings/location/{location}/assets', [AssetBorrowingController::class, 'getAssetsByLocation'])->name('asset-borrowings.assets-by-location');
+    Route::resource('asset-borrowings', AssetBorrowingController::class);
+    Route::resource('operator', OperatorController::class);
+    Route::put('asset-borrowings/{assetBorrowing}/return', [AssetBorrowingController::class, 'return'])->name('asset-borrowings.return');
+    Route::get('/assets/{asset}/print-qr', [AssetController::class, 'printQr'])->name('assets.print-qr');
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/assets', [ReportController::class, 'assetsReport'])->name('reports.assets');
+    Route::get('/reports/asset-borrowings', [ReportController::class, 'assetBorrowingsReport'])->name('reports.asset-borrowings');
+    Route::get('/app-settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::get('/profile', ProfileController::class)->name('profile');
+    Route::post('/app-settings', [SettingController::class, 'store'])->name('settings.store');
 });
+
+Route::get('/asset/{asset}/view', [FrontsideController::class, 'publicView'])->name('assets.public.view');
