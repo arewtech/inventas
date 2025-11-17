@@ -6,7 +6,6 @@ use App\Models\Asset;
 use App\Models\Category;
 use App\Models\Location;
 use Illuminate\Http\Request;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Storage;
 
@@ -106,10 +105,7 @@ class AssetController extends Controller
      */
     public function show(Asset $asset)
     {
-        // Generate QR code image using the stored data
-        $qrCode = QrCode::size(230)->generate($asset->qr_code);
-
-        return view('dashboard.assets.show', compact('asset', 'qrCode'));
+        return view('dashboard.assets.show', compact('asset'));
     }
 
     /**
@@ -209,9 +205,6 @@ class AssetController extends Controller
 
     public function printQr(Asset $asset)
     {
-        // Generate QR code
-        $qrCode = QrCode::size(200)
-            ->generate($asset->qr_code);
-        return view('dashboard.assets.print-qr', compact('asset', 'qrCode'));
+        return view('dashboard.assets.print-qr', compact('asset'));
     }
 }

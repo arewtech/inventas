@@ -24,6 +24,9 @@
             border: 1px solid #ddd;
             padding: 20px;
             border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         @media print {
@@ -54,17 +57,27 @@
     </div> --}}
 
     <div class="qr-container">
-        {!! $qrCode !!}
+        <div id="qrcode"></div>
     </div>
 
+    <script src="{{ asset('assets/js/qrcode.min.js') }}"></script>
     <script>
-        // Auto-print when the page loads
-        window.onload = function() {
-            // Short delay to ensure the QR renders properly
+        document.addEventListener('DOMContentLoaded', () => {
+            // Generate QR code using qrcode.min.js
+            const qrcode = new QRCode(document.getElementById('qrcode'), {
+                text: "{{ $asset->qr_code }}",
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            // Auto-print when the page loads
             setTimeout(function() {
                 window.print();
             }, 500);
-        };
+        });
     </script>
 </body>
 

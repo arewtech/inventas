@@ -95,8 +95,8 @@
                                 <h5 class="card-title text-white mb-0">QR Code</h5>
                             </div>
                             <div class="card-body text-center">
-                                <div class="border p-3 mb-3">
-                                    {!! $qrCode !!}
+                                <div class="border p-3 mb-3 d-flex justify-content-center">
+                                    <div id="qrcode"></div>
                                 </div>
                                 <p class="mb-2">Scan QR code untuk melihat informasi aset.</p>
                                 <div class="d-grid gap-2">
@@ -174,8 +174,19 @@
 @endsection
 
 @section('script')
+    <script src="{{ asset('assets/js/qrcode.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Generate QR code using qrcode.min.js
+            const qrcode = new QRCode(document.getElementById('qrcode'), {
+                text: "{{ $asset->qr_code }}",
+                width: 230,
+                height: 230,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
             initQRCodePrinting();
             initQRCodeDownload();
             initQRCodeTesting();
@@ -208,64 +219,52 @@
             btnDownload.addEventListener('click', (e) => {
                 e.preventDefault();
 
-                // Get SVG element
-                const svg = document.querySelector('svg');
+                // Get canvas or image element from QR code
+                const qrcodeElement = document.getElementById('qrcode');
+                const canvas = qrcodeElement.querySelector('canvas');
+                const img = qrcodeElement.querySelector('img');
 
-                // Create canvas for conversion
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
+                let downloadCanvas;
 
-                // Set canvas size with padding for better appearance
-                const svgRect = svg.getBoundingClientRect();
-                const scale = 2; // Scale for better quality
-                const padding = 50 * scale; // Padding around the QR code (50px on each side)
+                if (canvas) {
+                    // If QR code is rendered as canvas, use it directly
+                    downloadCanvas = canvas;
+                } else if (img) {
+                    // If QR code is rendered as image, convert to canvas
+                    downloadCanvas = document.createElement('canvas');
+                    const ctx = downloadCanvas.getContext('2d');
+                    downloadCanvas.width = img.width;
+                    downloadCanvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                }
 
-                // Set canvas dimensions with padding
-                canvas.width = svgRect.width * scale + (padding * 2);
-                canvas.height = svgRect.height * scale + (padding * 2);
+                if (downloadCanvas) {
+                    // Create a new canvas with padding and white background
+                    const finalCanvas = document.createElement('canvas');
+                    const ctx = finalCanvas.getContext('2d');
+                    const padding = 50;
 
-                // Create image from SVG
-                const img = new Image();
-                const svgData = new XMLSerializer().serializeToString(svg);
-                const svgBlob = new Blob([svgData], {
-                    type: 'image/svg+xml;charset=utf-8'
-                });
-                const svgUrl = URL.createObjectURL(svgBlob);
+                    finalCanvas.width = downloadCanvas.width + (padding * 2);
+                    finalCanvas.height = downloadCanvas.height + (padding * 2);
 
-                // When image loads, draw to canvas and convert to JPG
-                img.onload = function() {
-                    // Fill entire canvas with white background
+                    // Fill with white background
                     ctx.fillStyle = 'white';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
 
-                    // Draw the SVG image onto the canvas with padding (centered)
-                    ctx.drawImage(img, padding, padding, svgRect.width * scale, svgRect.height * scale);
+                    // Draw QR code in center
+                    ctx.drawImage(downloadCanvas, padding, padding);
 
-                    // Add a thin border around the QR code (optional)
-                    ctx.strokeStyle = '#f0f0f0';
-                    ctx.lineWidth = 1;
-                    ctx.strokeRect(padding - 5, padding - 5,
-                        svgRect.width * scale + 10, svgRect.height * scale + 10);
-
-                    // Convert to JPG
-                    const jpgUrl = canvas.toDataURL('image/jpeg', 0.95);
-
-                    // Trigger download
+                    // Convert to JPG and download
+                    const jpgUrl = finalCanvas.toDataURL('image/jpeg', 0.95);
                     const downloadLink = document.createElement('a');
                     downloadLink.href = jpgUrl;
-                    formatNameSlug = "{{ $asset->name }}".toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g,
-                        '');
+                    const formatNameSlug = "{{ $asset->name }}".toLowerCase().replace(/ /g, '-').replace(
+                        /[^\w-]+/g, '');
                     downloadLink.download = 'qrcode-' + formatNameSlug + '.jpg';
                     document.body.appendChild(downloadLink);
                     downloadLink.click();
                     document.body.removeChild(downloadLink);
-
-                    // Clean up
-                    URL.revokeObjectURL(svgUrl);
-                };
-
-                // Set image source to SVG URL
-                img.src = svgUrl;
+                }
             });
         }
 
