@@ -7,6 +7,21 @@ use Illuminate\Http\Request;
 
 class FrontsideController extends Controller
 {
+    public function index()
+    {
+        return view('pages.index');
+    }
+
+    public function faqSite()
+    {
+        return view('pages.faq.index');
+    }
+
+    public function letterSite()
+    {
+        return view('pages.letters.index');
+    }
+
     public function publicView(Asset $asset)
     {
         // dd($asset);

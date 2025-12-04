@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AssetBorrowingController;
 use App\Http\Controllers\FrontsideController;
+use App\Http\Controllers\TransferIncomingCertificateSiteController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AssetController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\OperatorController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\TransferIncomingCertificateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,8 +24,16 @@ use App\Http\Controllers\SettingController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::redirect('/', '/dashboard');
+Route::get('/', [FrontsideController::class, 'index'])->name('home');
+Route::get('faq', [FrontsideController::class, 'faqSite'])->name('faq-site');
+// Route::get('/profile', [ProfileSiteController::class, 'index'])->name('profile-site')->middleware(['auth', 'isUser']);
+// Route::get('/histories', [HistorySiteController::class, 'index'])->name('histories-site')->middleware(['auth', 'isUser']);
+// Route::get('/change-password', [FrontsideController::class, 'changePasswordSite'])->name('change-password-site')->middleware(['auth', 'isUser']);
+Route::get('/letters', [FrontsideController::class, 'letterSite'])->name('letters-site')->middleware('auth');
+Route::middleware('auth')->group(function () {
+Route::resource('transfer-incoming-certificate-site', TransferIncomingCertificateSiteController::class);
+});
+// Route::redirect('/', '/dashboard');
 Route::prefix('/dashboard')->middleware('auth')->group(function () {
     Route::get('/', DashboardController::class)->name('dashboard');
     Route::resource('categories', CategoryController::class);

@@ -3,25 +3,20 @@
 
 <head>
     @include('includes.frontsides.style')
-    @stack('after:css')
 </head>
 
 <body class="font-sans antialiased">
-    @if (url()->current() == route('home'))
-        <!-- Navigation -->
-        @include('includes.frontsides.navigation')
-        <!-- End Navigation -->
-    @endif
+    <!-- Navigation -->
+    @include('includes.frontsides.navigation')
+    <!-- End Navigation -->
 
     <!-- Content -->
     @yield('content')
     <!-- End Content -->
 
-    @if (url()->current() == route('home'))
-        <!-- Footer -->
-        @include('includes.frontsides.footer')
-        <!-- End Footer -->
-    @endif
+    <!-- Footer -->
+    @include('includes.frontsides.footer')
+    <!-- End Footer -->
 
     <!-- Navigasi Cepat ke Atas -->
     <a href="#" class="scroll-to-top"><i class="bi bi-arrow-up-circle"></i></a>
