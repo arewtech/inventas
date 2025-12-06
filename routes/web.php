@@ -30,6 +30,8 @@ Route::get('/', [FrontsideController::class, 'index'])->name('home');
 Route::get('faq', [FrontsideController::class, 'faqSite'])->name('faq-site');
 // Route::get('/profile', [ProfileSiteController::class, 'index'])->name('profile-site')->middleware(['auth', 'isUser']);
 Route::get('/histories', [HistorySiteController::class, 'index'])->name('histories-site')->middleware(['auth']);
+// User print routes
+Route::get('/letters/transfer-ins/{transfer_in}/print', [PrintLetterController::class, 'userPrint'])->name('letters.transfer-ins.print')->middleware(['auth']);
 // Route::get('/change-password', [FrontsideController::class, 'changePasswordSite'])->name('change-password-site')->middleware(['auth', 'isUser']);
 Route::get('/letters', [FrontsideController::class, 'letterSite'])->name('letters-site')->middleware('auth');
 Route::middleware('auth')->group(function () {

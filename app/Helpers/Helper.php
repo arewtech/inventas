@@ -99,3 +99,15 @@ function getDestroyRoute($type, $id)
 
     return route($routes[$type] ?? 'home', $id);
 }
+
+function getPrintRoute($type, $id)
+{
+    $routes = [
+        'transfer_in' => 'letters.transfer-ins.print',
+        'transfer_out' => 'letters.transfer-outs.print',
+        'active_teaching' => 'letters.active-teachings.print',
+        // Tambahkan jenis surat lainnya di sini
+    ];
+
+    return route($routes[$type] ?? 'home', $id);
+}

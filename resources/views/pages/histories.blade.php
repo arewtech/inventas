@@ -43,6 +43,14 @@
                                                     style="font-size: 0.9rem"
                                                     class="text-decoration-none text-primary">Detail
                                                     Pesan</a>
+                                                @if ($letter->number !== null)
+                                                    |
+                                                    <a href="{{ getPrintRoute($letter->type, $letter->id) }}"
+                                                        target="_blank" style="font-size: 0.9rem"
+                                                        class="text-decoration-none text-success">
+                                                        <i class="bi bi-printer"></i> Print
+                                                    </a>
+                                                @endif
                                             @else
                                                 |
                                                 <form style="transform: translateY(-1px)"
@@ -73,7 +81,7 @@
                                                         <div class="modal-body">
                                                             <p>
                                                                 <b>Catatan:</b> {{ $letter->letter }} selesai dibuat
-                                                                dan dapat diambil di kantor kelurahan setempat.
+                                                                dan dapat langsung di print.
                                                             </p>
                                                             <p class="text-muted text-md">
                                                                 *Baca juga paduan pengambilan surat di <a
