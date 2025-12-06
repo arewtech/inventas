@@ -18,13 +18,13 @@
                         <div class="col-md-5">
                             <div class="card card-latter shadow-xd">
                                 <div class="card-body">
-                                    <h5 class="card-title">Surat Keterangan Mutasi Terima ✉️</h5>
+                                    <h5 class="card-title">Surat Keterangan Mutasi Terima 📥</h5>
                                     <p class="card-text line-clamp-3">
                                         Surat keterangan penghasilan adalah surat yang dikeluarkan
                                         oleh instansi atau perusahaan yang berisi informasi
                                         tentang penghasilan seseorang.
                                     </p>
-                                    <a href="{{ route('transfer-incoming-certificate-site.create') }}"
+                                    <a href="{{ route('transfer-in-sites.create') }}"
                                         class="btn btn-sm btn-outline-primary">Buat
                                         Surat</a>
                                 </div>

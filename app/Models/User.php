@@ -72,4 +72,9 @@ class User extends Authenticatable
     {
         return $this->status == 'active' ? 'bg-success-subtle text-success' : 'bg-secondary-subtle text-muted';
     }
+
+    public function transferIns()
+    {
+        return $this->hasMany(TransferIn::class);
+    }
 }

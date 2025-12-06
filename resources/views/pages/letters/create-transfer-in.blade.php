@@ -30,7 +30,7 @@
                         @foreach ($errors->all() as $item)
                             {{ $item }}
                         @endforeach
-                        <form action="{{ route('transfer-incoming-certificate-site.store') }}" method="POST">
+                        <form action="{{ route('transfer-in-sites.store') }}" method="POST">
                             @csrf
                             <div class="mb-3">
                                 <label for="student_name" class="form-label">Nama Lengkap Siswa</label>

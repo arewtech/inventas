@@ -60,3 +60,42 @@ function listSchoolLocations()
         'Ruang Aset',
     ];
 }
+// namespace App\Helpers;
+function letterName($letterName = null) {
+    $letters = [
+        'transfer_in' => 'Surat Keterangan Mutasi Terima',
+        'transfer_out' => 'Surat Keterangan Mutasi Keluar',
+        'active_teaching' => 'Surat Keterangan Aktif Mengajar',
+    ];
+
+    if ($letterName === null) {
+        return $letters;
+    }
+
+    return $letters[$letterName] ?? 'Surat Keterangan';
+}
+function formatIcon($icon)
+{
+    switch ($icon) {
+        case 'transfer_in':
+            return '📥';
+        case 'transfer_out':
+            return '📤';
+        case 'active_teaching':
+            return '📚';
+
+        default:
+            return '❓';
+    }
+}
+function getDestroyRoute($type, $id)
+    {
+        $routes = [
+            'transfer_in' => 'transfer-in-sites.destroy',
+            'transfer_out' => 'transfer-out-sites.destroy',
+            'active_teaching' => 'active-teaching-sites.destroy',
+            // Tambahkan jenis surat lainnya di sini
+        ];
+
+    return route($routes[$type] ?? 'home', $id);
+}

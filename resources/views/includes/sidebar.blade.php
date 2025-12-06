@@ -75,6 +75,19 @@
                 </li>
                 <li class="nav-small-cap">
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                    <span class="hide-menu">Letters</span>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link {{ Route::is('transfer-ins*') ? 'active' : '' }}"
+                        href="{{ route('transfer-ins.index') }}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-mail"></i>
+                        </span>
+                        <span class="hide-menu">Surat Mutasi Terima</span>
+                    </a>
+                </li>
+                <li class="nav-small-cap">
+                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                     <span class="hide-menu">Lainnya</span>
                 </li>
                 @if (auth()->user()->isAdmin())

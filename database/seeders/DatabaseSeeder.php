@@ -43,5 +43,13 @@ class DatabaseSeeder extends Seeder
             'phone' => '081123142323',
             'role' => 'kepala_sekolah',
         ]);
+
+        \App\Models\User::factory()->create([
+            'name' => 'Umar Bakri',
+            'username' => 'umar',
+            'email' => 'umar@gmail.com',
+            'phone' => '081234567890',
+            'role' => 'user',
+        ]);
     }
 }

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         // Surat keterangan mutasi terima
-        Schema::create('transfer_incoming_certificates', function (Blueprint $table) {
+        Schema::create('transfer_ins', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // yang mengajukan surat
             $table->foreignId('response_by')->nullable()->constrained('users')->onDelete('cascade'); // penyetuju surat
@@ -28,6 +28,7 @@ return new class extends Migration
             $table->string('class'); // kelas (1, 2, 3, dst)
             $table->string('previous_school'); // sekolah asal / sebelumnya (mutasi dari)
             $table->text('student_address'); // alamat siswa
+            $table->string('status')->default('pending'); // pending, success
             $table->timestamps();
         });
     }
@@ -37,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transfer_incoming_certificates');
+        Schema::dropIfExists('transfer_ins');
     }
 };

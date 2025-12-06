@@ -24,7 +24,7 @@
                     </div>
                 </div>
                 <div class="col-md-5 hero-image">
-                    <img width="430" src="{{ asset('assets/images/svg/hero.svg') }}" alt="Hero Image"
+                    <img width="430" src="{{ asset('assets/frontsides/images/svg/hero.svg') }}" alt="Hero Image"
                         class="img-fluid" />
                 </div>
             </div>

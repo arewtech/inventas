@@ -2,17 +2,19 @@
 
 use App\Http\Controllers\AssetBorrowingController;
 use App\Http\Controllers\FrontsideController;
-use App\Http\Controllers\TransferIncomingCertificateSiteController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HistorySiteController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OperatorController;
+use App\Http\Controllers\PrintLetterController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
-use App\Http\Controllers\TransferIncomingCertificateController;
+use App\Http\Controllers\TransferInController;
+use App\Http\Controllers\TransferInSiteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,11 +29,11 @@ use App\Http\Controllers\TransferIncomingCertificateController;
 Route::get('/', [FrontsideController::class, 'index'])->name('home');
 Route::get('faq', [FrontsideController::class, 'faqSite'])->name('faq-site');
 // Route::get('/profile', [ProfileSiteController::class, 'index'])->name('profile-site')->middleware(['auth', 'isUser']);
-// Route::get('/histories', [HistorySiteController::class, 'index'])->name('histories-site')->middleware(['auth', 'isUser']);
+Route::get('/histories', [HistorySiteController::class, 'index'])->name('histories-site')->middleware(['auth']);
 // Route::get('/change-password', [FrontsideController::class, 'changePasswordSite'])->name('change-password-site')->middleware(['auth', 'isUser']);
 Route::get('/letters', [FrontsideController::class, 'letterSite'])->name('letters-site')->middleware('auth');
 Route::middleware('auth')->group(function () {
-Route::resource('transfer-incoming-certificate-site', TransferIncomingCertificateSiteController::class);
+Route::resource('transfer-in-sites', TransferInSiteController::class);
 });
 // Route::redirect('/', '/dashboard');
 Route::prefix('/dashboard')->middleware('auth')->group(function () {
@@ -50,6 +52,14 @@ Route::prefix('/dashboard')->middleware('auth')->group(function () {
     Route::get('/app-settings', [SettingController::class, 'index'])->name('settings.index');
     Route::get('/profile', ProfileController::class)->name('profile');
     Route::post('/app-settings', [SettingController::class, 'store'])->name('settings.store');
+
+    // letters routes
+    // blank style
+    Route::get('/transfer-ins/{transfer_in}/print', [PrintLetterController::class, 'incomeCertificatePrint'])->name('transfer-ins.print');
+    // update nomer surat
+    Route::put('/transfer-ins/{transfer_in}/update-number', [TransferInController::class, 'updateNumber'])->name('transfer-ins.update-number');
+    // end
+    Route::resource('transfer-ins', TransferInController::class);
 });
 
 Route::get('/asset/{asset}/view', [FrontsideController::class, 'publicView'])->name('assets.public.view');
