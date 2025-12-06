@@ -21,6 +21,16 @@ class SettingController extends Controller
         } else {
             $data['app_logo'] = settings('app_logo');
         }
+        if ($request->hasFile("app_ttd")) {
+            if (settings("app_ttd")) {
+                Storage::delete("public/" . settings("app_ttd"));
+            }
+            $data["app_ttd"] = $request
+                ->file("app_ttd")
+                ->store("images/settings", "public");
+        } else {
+            $data["app_ttd"] = settings("app_ttd");
+        }
         // return $data;
         settings()->set($data);
         return back()->with('success', 'Pengaturan berhasil diubah');
