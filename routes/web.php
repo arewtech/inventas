@@ -40,15 +40,15 @@ Route::get('/change-password', [FrontsideController::class, 'changePasswordSite'
 Route::get('/letters/transfer-ins/{transfer_in}/print', [PrintLetterController::class, 'userPrintIn'])->name('letters.transfer-ins.print')->middleware(['auth']);
 Route::get('/letters/transfer-outs/{transfer_out}/print', [PrintLetterController::class, 'userPrintOut'])->name('letters.transfer-outs.print')->middleware(['auth']);
 Route::get('/letters/active-teachings/{active_teaching}/print', [PrintLetterController::class, 'userPrintActiveTeaching'])->name('letters.active-teachings.print')->middleware(['auth']);
-// Route::get('/change-password', [FrontsideController::class, 'changePasswordSite'])->name('change-password-site')->middleware(['auth', 'isUser']);
 Route::get('/letters', [FrontsideController::class, 'letterSite'])->name('letters-site')->middleware('auth');
+
 Route::middleware('auth')->group(function () {
     Route::resource('transfer-in-sites', TransferInSiteController::class);
     Route::resource('transfer-out-sites', TransferOutSiteController::class);
     Route::resource('active-teaching-sites', ActiveTeachingSiteController::class);
 });
 // Route::redirect('/', '/dashboard');
-Route::prefix('/dashboard')->middleware('auth')->group(function () {
+Route::prefix('/dashboard')->middleware(['auth', 'role:admin,operator'])->group(function () {
     Route::get('/', DashboardController::class)->name('dashboard');
     Route::resource('categories', CategoryController::class);
     Route::resource('locations', LocationController::class);
@@ -80,4 +80,5 @@ Route::prefix('/dashboard')->middleware('auth')->group(function () {
     Route::resource('active-teachings', ActiveTeachingController::class);
 });
 
+// route public tanpa auth
 Route::get('/asset/{asset}/view', [FrontsideController::class, 'publicView'])->name('assets.public.view');

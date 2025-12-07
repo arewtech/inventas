@@ -36,13 +36,13 @@ class DatabaseSeeder extends Seeder
             'role' => 'operator',
         ]);
 
-        \App\Models\User::factory()->create([
-            'name' => 'Kepala Sekolah',
-            'username' => 'kepala',
-            'email' => 'kepalasekolah@gmail.com',
-            'phone' => '081123142323',
-            'role' => 'kepala_sekolah',
-        ]);
+        // \App\Models\User::factory()->create([
+        //     'name' => 'Kepala Sekolah',
+        //     'username' => 'kepala',
+        //     'email' => 'kepalasekolah@gmail.com',
+        //     'phone' => '081123142323',
+        //     'role' => 'kepala_sekolah',
+        // ]);
 
         \App\Models\User::factory()->create([
             'name' => 'Umar Bakri',
