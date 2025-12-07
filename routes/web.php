@@ -34,7 +34,7 @@ Route::get('/', [FrontsideController::class, 'index'])->name('home');
 Route::get('faq', [FrontsideController::class, 'faqSite'])->name('faq-site');
 // Route::get('/profile', [ProfileSiteController::class, 'index'])->name('profile-site')->middleware(['auth', 'isUser']);
 Route::get('/histories', [HistorySiteController::class, 'index'])->name('histories-site')->middleware(['auth']);
-// Route::get('/profile', [ProfileSiteController::class, 'index'])->name('profile-site')->middleware(['auth']);
+Route::get('/profile', [ProfileController::class, 'siteProfile'])->name('profile-site')->middleware(['auth']);
 Route::get('/change-password', [FrontsideController::class, 'changePasswordSite'])->name('change-password-site')->middleware(['auth']);
 // User print routes
 Route::get('/letters/transfer-ins/{transfer_in}/print', [PrintLetterController::class, 'userPrintIn'])->name('letters.transfer-ins.print')->middleware(['auth']);
@@ -62,7 +62,7 @@ Route::prefix('/dashboard')->middleware('auth')->group(function () {
     Route::get('/reports/assets', [ReportController::class, 'assetsReport'])->name('reports.assets');
     Route::get('/reports/asset-borrowings', [ReportController::class, 'assetBorrowingsReport'])->name('reports.asset-borrowings');
     Route::get('/app-settings', [SettingController::class, 'index'])->name('settings.index');
-    Route::get('/profile', ProfileController::class)->name('profile');
+    Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
     Route::post('/app-settings', [SettingController::class, 'store'])->name('settings.store');
 
     // letters routes

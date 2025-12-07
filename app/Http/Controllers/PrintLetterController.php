@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class PrintLetterController extends Controller
 {
-    public function incomeCertificatePrint(TransferIn $transfer_in)
+    public function transferInPrint(TransferIn $transfer_in)
     {
         $transfer_in =  $transfer_in->load(['user', 'responseBy']);
         if ($transfer_in->status == 'pending') {
@@ -18,7 +18,7 @@ class PrintLetterController extends Controller
         return view('dashboard.print.print-transfer-in', compact('transfer_in'));
     }
 
-    public function userPrint(TransferIn $transfer_in)
+    public function userPrintIn(TransferIn $transfer_in)
     {
         // Verify the letter belongs to the authenticated user
         if ($transfer_in->user_id !== auth()->id()) {

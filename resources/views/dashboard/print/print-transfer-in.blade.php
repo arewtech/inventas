@@ -189,7 +189,7 @@
             <table style="margin-left: 40px;">
                 <tr class="text-capitalize">
                     <td width="150">Nama Siswa</td>
-                    <td>: <b>{{ $transfer_in->student_name }}</b></td>
+                    <td>: {{ $transfer_in->student_name }}</td>
                 </tr>
                 <tr class="text-capitalize">
                     <td>Tempat/ Tanggal Lahir</td>

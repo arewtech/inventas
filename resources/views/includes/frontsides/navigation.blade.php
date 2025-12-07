@@ -50,9 +50,9 @@
                                     <a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a>
                                 </li>
                             @else
-                                {{-- <li>
+                                <li>
                                     <a class="dropdown-item" href="{{ route('profile-site') }}">Edit Profil</a>
-                                </li> --}}
+                                </li>
                                 <li>
                                     <a class="dropdown-item" href="{{ route('histories-site') }}">List Histori</a>
                                 </li>
