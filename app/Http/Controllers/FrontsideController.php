@@ -22,6 +22,11 @@ class FrontsideController extends Controller
         return view('pages.letters.index');
     }
 
+    public function changePasswordSite()
+    {
+        return view('pages.change-password');
+    }
+
     public function publicView(Asset $asset)
     {
         // dd($asset);

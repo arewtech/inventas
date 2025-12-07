@@ -56,9 +56,9 @@
                                 <li>
                                     <a class="dropdown-item" href="{{ route('histories-site') }}">List Histori</a>
                                 </li>
-                                {{-- <li>
+                                <li>
                                     <a class="dropdown-item" href="{{ route('change-password-site') }}">Ubah Password</a>
-                                </li> --}}
+                                </li>
                             @endif
                             <hr style="margin: 8px 0" />
                             <li>

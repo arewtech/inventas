@@ -34,8 +34,10 @@ Route::get('/', [FrontsideController::class, 'index'])->name('home');
 Route::get('faq', [FrontsideController::class, 'faqSite'])->name('faq-site');
 // Route::get('/profile', [ProfileSiteController::class, 'index'])->name('profile-site')->middleware(['auth', 'isUser']);
 Route::get('/histories', [HistorySiteController::class, 'index'])->name('histories-site')->middleware(['auth']);
+// Route::get('/profile', [ProfileSiteController::class, 'index'])->name('profile-site')->middleware(['auth']);
+Route::get('/change-password', [FrontsideController::class, 'changePasswordSite'])->name('change-password-site')->middleware(['auth']);
 // User print routes
-Route::get('/letters/transfer-ins/{transfer_in}/print', [PrintLetterController::class, 'userPrint'])->name('letters.transfer-ins.print')->middleware(['auth']);
+Route::get('/letters/transfer-ins/{transfer_in}/print', [PrintLetterController::class, 'userPrintIn'])->name('letters.transfer-ins.print')->middleware(['auth']);
 Route::get('/letters/transfer-outs/{transfer_out}/print', [PrintLetterController::class, 'userPrintOut'])->name('letters.transfer-outs.print')->middleware(['auth']);
 Route::get('/letters/active-teachings/{active_teaching}/print', [PrintLetterController::class, 'userPrintActiveTeaching'])->name('letters.active-teachings.print')->middleware(['auth']);
 // Route::get('/change-password', [FrontsideController::class, 'changePasswordSite'])->name('change-password-site')->middleware(['auth', 'isUser']);
@@ -65,7 +67,7 @@ Route::prefix('/dashboard')->middleware('auth')->group(function () {
 
     // letters routes
     // print routes
-    Route::get('/transfer-ins/{transfer_in}/print', [PrintLetterController::class, 'incomeCertificatePrint'])->name('transfer-ins.print');
+    Route::get('/transfer-ins/{transfer_in}/print', [PrintLetterController::class, 'transferInPrint'])->name('transfer-ins.print');
     Route::get('/transfer-outs/{transfer_out}/print', [PrintLetterController::class, 'transferOutPrint'])->name('transfer-outs.print');
     Route::get('/active-teachings/{active_teaching}/print', [PrintLetterController::class, 'activeTeachingPrint'])->name('active-teachings.print');
     // update nomer surat
