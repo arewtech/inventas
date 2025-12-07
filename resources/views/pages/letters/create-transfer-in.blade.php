@@ -71,9 +71,9 @@
                                 <label for="class" class="form-label">Kelas ( SMP )</label>
                                 <select class="form-select" id="class" name="class" required>
                                     <option value="">Pilih Kelas</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
+                                    <option value="7" {{ old('class') == '7' ? 'selected' : '' }}>7</option>
+                                    <option value="8" {{ old('class') == '8' ? 'selected' : '' }}>8</option>
+                                    <option value="9" {{ old('class') == '9' ? 'selected' : '' }}>9</option>
                                 </select>
                             </div>
                             <div class="mb-3">

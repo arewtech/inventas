@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ActiveTeachingController;
+use App\Http\Controllers\ActiveTeachingSiteController;
 use App\Http\Controllers\AssetBorrowingController;
 use App\Http\Controllers\FrontsideController;
 use Illuminate\Support\Facades\Route;
@@ -35,11 +37,13 @@ Route::get('/histories', [HistorySiteController::class, 'index'])->name('histori
 // User print routes
 Route::get('/letters/transfer-ins/{transfer_in}/print', [PrintLetterController::class, 'userPrint'])->name('letters.transfer-ins.print')->middleware(['auth']);
 Route::get('/letters/transfer-outs/{transfer_out}/print', [PrintLetterController::class, 'userPrintOut'])->name('letters.transfer-outs.print')->middleware(['auth']);
+Route::get('/letters/active-teachings/{active_teaching}/print', [PrintLetterController::class, 'userPrintActiveTeaching'])->name('letters.active-teachings.print')->middleware(['auth']);
 // Route::get('/change-password', [FrontsideController::class, 'changePasswordSite'])->name('change-password-site')->middleware(['auth', 'isUser']);
 Route::get('/letters', [FrontsideController::class, 'letterSite'])->name('letters-site')->middleware('auth');
 Route::middleware('auth')->group(function () {
     Route::resource('transfer-in-sites', TransferInSiteController::class);
     Route::resource('transfer-out-sites', TransferOutSiteController::class);
+    Route::resource('active-teaching-sites', ActiveTeachingSiteController::class);
 });
 // Route::redirect('/', '/dashboard');
 Route::prefix('/dashboard')->middleware('auth')->group(function () {
@@ -63,12 +67,15 @@ Route::prefix('/dashboard')->middleware('auth')->group(function () {
     // print routes
     Route::get('/transfer-ins/{transfer_in}/print', [PrintLetterController::class, 'incomeCertificatePrint'])->name('transfer-ins.print');
     Route::get('/transfer-outs/{transfer_out}/print', [PrintLetterController::class, 'transferOutPrint'])->name('transfer-outs.print');
+    Route::get('/active-teachings/{active_teaching}/print', [PrintLetterController::class, 'activeTeachingPrint'])->name('active-teachings.print');
     // update nomer surat
     Route::put('/transfer-ins/{transfer_in}/update-number', [TransferInController::class, 'updateNumber'])->name('transfer-ins.update-number');
     Route::put('/transfer-outs/{transfer_out}/update-number', [TransferOutController::class, 'updateNumber'])->name('transfer-outs.update-number');
+    Route::put('/active-teachings/{active_teaching}/update-number', [ActiveTeachingController::class, 'updateNumber'])->name('active-teachings.update-number');
     // resources
     Route::resource('transfer-ins', TransferInController::class);
     Route::resource('transfer-outs', TransferOutController::class);
+    Route::resource('active-teachings', ActiveTeachingController::class);
 });
 
 Route::get('/asset/{asset}/view', [FrontsideController::class, 'publicView'])->name('assets.public.view');

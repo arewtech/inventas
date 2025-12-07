@@ -82,4 +82,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(TransferOut::class);
     }
+
+    public function activeTeachings()
+    {
+        return $this->hasMany(ActiveTeaching::class);
+    }
 }

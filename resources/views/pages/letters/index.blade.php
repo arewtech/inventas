@@ -43,6 +43,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-5">
+                            <div class="card card-latter shadow-xd">
+                                <div class="card-body">
+                                    <h5 class="card-title">Surat Keterangan Aktif Mengajar 👨‍🏫</h5>
+                                    <p class="card-text line-clamp-3">
+                                        Surat keterangan aktif mengajar adalah surat yang menerangkan bahwa
+                                        guru tersebut masih aktif mengajar di sekolah ini.
+                                    </p>
+                                    <a href="{{ route('active-teaching-sites.create') }}"
+                                        class="btn btn-sm btn-outline-primary">Buat
+                                        Surat</a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <!-- end list card letters -->
                 </div>

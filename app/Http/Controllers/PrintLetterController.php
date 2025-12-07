@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActiveTeaching;
 use App\Models\TransferIn;
 use App\Models\TransferOut;
 use Illuminate\Http\Request;
@@ -56,5 +57,30 @@ class PrintLetterController extends Controller
         }
 
         return view('dashboard.print.print-transfer-out', compact('transfer_out'));
+    }
+
+    public function activeTeachingPrint(ActiveTeaching $active_teaching)
+    {
+        $active_teaching = $active_teaching->load(['user', 'responseBy']);
+        if ($active_teaching->status == 'pending') {
+            abort(404);
+        }
+        return view('dashboard.print.print-active-teaching', compact('active_teaching'));
+    }
+
+    public function userPrintActiveTeaching(ActiveTeaching $active_teaching)
+    {
+        // Verify the letter belongs to the authenticated user
+        if ($active_teaching->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized access');
+        }
+
+        $active_teaching = $active_teaching->load(['user', 'responseBy']);
+
+        if ($active_teaching->status == 'pending' || $active_teaching->number == null) {
+            abort(404, 'Letter not ready for print');
+        }
+
+        return view('dashboard.print.print-active-teaching', compact('active_teaching'));
     }
 }
