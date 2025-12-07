@@ -54,6 +54,8 @@
                                     class="btn
                                     btn-outline-danger btn-sm mx-3 my-2 d-block">Logout</a>
                             </form>
+                            <a href="{{ route('home') }}" class="backto text-muted fs-2 d-block text-center mt-2">back
+                                to website</a>
                         </div>
                     </div>
                 </li>
