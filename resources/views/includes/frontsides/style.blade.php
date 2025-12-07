@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="{{ asset('assets/frontsides/css/style.css') }}" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 <link
-    href="{{ setting('app_logo') !== null ? asset('storage/' . setting('app_logo')) : asset('assets/images/logos/lavor-logo.png') }}"
+    href="{{ setting('app_logo') !== null ? asset('storage/' . setting('app_logo')) : asset('assets/images/logos/water.png') }}"
     rel="icon">
 <title>
     {{ isset($title) ? $title . ' | ' . setting('app_title', 'My App') : setting('app_title', 'My App') }}
