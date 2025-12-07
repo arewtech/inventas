@@ -1,0 +1,296 @@
+html {
+    scroll-behavior: smooth;
+}
+body {
+    font-family: "Poppins", sans-serif;
+    background-color: #f8f9fa;
+}
+
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 3px rgba(0 0 0 / 0.15);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(125deg, #f5f5f5, #ddd);
+    border-radius: 10px;
+}
+
+h6.p-first::first-letter {
+    text-transform: capitalize;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.card-latter {
+    padding: 0.4rem;
+    border: 1px solid #f8f9fa;
+    border-radius: 15px;
+    transition: all 0.3s;
+}
+
+.card-latter:hover {
+    border: 1px solid #007bff !important;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.05);
+}
+
+.documantion-image {
+    width: auto;
+}
+
+/* styling box image multiple */
+
+.btn-delete {
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.delete-image {
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 999;
+}
+
+.box-image-preview {
+    border: 1px solid #ccc;
+    width: 120px;
+    height: 120px;
+    position: relative;
+    border-radius: 5px;
+}
+
+.box-image {
+    border: 1px dashed #ccc;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    border-radius: 5px;
+}
+
+.hide-input {
+    position: absolute;
+    unset: 0;
+    opacity: 0;
+}
+
+/* end */
+
+.header-complaint {
+    padding: 1rem 2rem;
+    background-color: #fff;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.03);
+    border-radius: 15px;
+}
+
+.search-complaint input {
+    border-radius: 20px;
+    padding: 10px 20px;
+    width: 100%;
+}
+
+.search-complaint input::placeholder {
+    color: #ced4da;
+}
+
+.search-complaint button {
+    border-radius: 20px;
+    padding: 10px 15px;
+}
+
+.shadow-xd {
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.03);
+}
+
+.badge-blue {
+    border: 1px solid;
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    width: max-content;
+    color: rgba(83, 155, 255, 1);
+    background-color: #f0f9ff;
+    border-radius: 35px;
+}
+
+.text-primary-subtle {
+    color: rgba(83, 155, 255, 1) !important;
+    /* color: #5d87ff; */
+    /* color: #5d87ff; */
+}
+
+.text-success-subtle {
+    color: rgba(19, 222, 185, 1) !important;
+}
+
+.btn-primary-subtle {
+    background-color: rgba(83, 155, 255, 1) !important;
+    /* color: #5d87ff; */
+    /* color: #5d87ff; */
+}
+
+.font-lora {
+    font-family: "Lora", serif;
+}
+
+.text-sm {
+    font-size: 0.8rem;
+}
+
+.text-md {
+    font-size: 1rem;
+}
+
+.text-lg {
+    font-size: 1.2rem;
+}
+
+.text-xl {
+    font-size: 1.5rem;
+}
+
+.text-xxl {
+    font-size: 2rem;
+}
+
+.hero-content .intro-title {
+    font-size: 2rem;
+}
+
+.line-clamp-1 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+}
+
+.line-clamp {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+}
+
+.hero-content {
+    padding: 3rem 2rem;
+}
+
+.format-school {
+    font-size: 1.3rem;
+}
+
+.btn-intro {
+    font-size: 1rem;
+}
+
+.scroll-to-top {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    bottom: 20px;
+    right: 20px;
+    font-size: 24px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.scroll-to-top.floating {
+    background-color: #dc3545; /* Ganti warna latar belakang saat tombol mengambang */
+    transform: scale(1.1); /* Efek scaling untuk memberikan kesan mengambang */
+}
+
+/* MEDIA (BREAKPOINT)
+Extra small devices (portrait phones, less than 576px)
+*/
+@media only screen and (max-width: 576px) {
+}
+
+/* Small devices (landscape phones, less than 768px) */
+
+@media only screen and (min-width: 768px) {
+    .w-full {
+        width: auto;
+    }
+
+    .documantion-image {
+        width: 250px;
+        height: 185px;
+        object-fit: cover;
+    }
+
+    .hero-content {
+        padding: 4rem;
+    }
+
+    .hero-content .intro-title {
+        font-size: 2rem;
+    }
+
+    .format-school {
+        font-size: 1.2rem;
+    }
+
+    .btn-intro {
+        font-size: 0.8rem;
+    }
+}
+
+/* Large devices (desktops, less than 992px) */
+
+/* @media only screen and (min-width: 992px) {
+
+} */
+
+/* Extra large devices (large desktops, less than 1200px) */
+
+@media only screen and (min-width: 1200px) {
+    .w-full {
+        width: auto;
+    }
+
+    .hero-content {
+        padding: 7rem 4.5rem 2rem;
+    }
+
+    .hero-content .intro-title {
+        font-size: 2.5rem;
+    }
+
+    .hero {
+        height: calc(100vh - 60px);
+    }
+
+    .hero-content .format-school {
+        font-size: 1.1rem;
+    }
+
+    .btn-intro {
+        font-size: 1rem;
+    }
+}

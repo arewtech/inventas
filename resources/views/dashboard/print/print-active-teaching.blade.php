@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ $active_teaching->letter }}</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-size: 14px;
+            line-height: 1.3;
+        }
+
+        main {
+            margin: auto;
+            max-width: 550px;
+            padding: 10px;
+        }
+
+        /* Improved header layout and styling to match reference design */
+        .header {
+            margin-bottom: 10px;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+            padding-bottom: 8px;
+        }
+
+        .header-logo {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-right: 10px;
+        }
+
+        .logo {
+            width: 110px;
+            height: 110px;
+        }
+
+        .header-text {
+            flex: 1;
+            text-align: left;
+            padding-left: 10px;
+            border-left: 3px solid #000;
+        }
+
+        .header-text .step-1 {
+            margin: 1px 0 0 0;
+            line-height: 1;
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .header-text .step-2 {
+            margin: 1px 0 0 0;
+            line-height: 1;
+            font-size: 26px;
+            font-weight: bolder;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .header-text .step-3 {
+            margin: 1px 0 0 0;
+            line-height: 1;
+            font-size: 16px;
+            font-weight: lighter;
+        }
+
+        .header-info {
+            margin: 1px 0 0 0;
+            font-size: 13px;
+            line-height: 1.2;
+        }
+
+        .header-info p {
+            margin: 1px 0;
+        }
+
+        /* Styled blue bar for secretary/contact information */
+        .address-blue {
+            background-color: #003fbc;
+            color: white;
+            font-size: 11px;
+            padding: 6px 12px;
+            margin: 0;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-align: center;
+            line-height: 1.4;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 16px;
+            margin: 0;
+            font-weight: bold;
+        }
+
+        h2 {
+            font-size: 14px;
+            margin: 5px 0;
+            font-weight: bold;
+        }
+
+        .title {
+            text-transform: uppercase;
+            font-size: 20px;
+            margin: 25px 0 0 0;
+            text-align: center;
+            text-decoration: underline;
+        }
+
+        .content {
+            margin-top: 35px;
+            text-align: justify;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        td {
+            vertical-align: top;
+            padding: 2px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: right;
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid black;
+            margin: 8px 0;
+        }
+
+        .text-capitalize {
+            text-transform: capitalize;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <!-- Restructured header with flex layout for better alignment -->
+        <div class="header">
+            <div class="header-top">
+                <div class="header-logo">
+                    <img src="{{ asset('assets/images/logos/logo-app.png') }}" alt="Logo" class="logo">
+                </div>
+                <div class="header-text">
+                    <h1 class="step-1">{{ setting('app_foundation_name') ?? '-' }}</h1>
+                    <h2 class="step-2">{{ setting('app_school_name') ?? '-' }}</h2>
+                    <h2 class="step-3">TERAKREDITASI "{{ setting('app_accreditation') ?? '-' }}"</h2>
+                    <div class="header-info">
+                        <p>NSS : {{ setting('app_nss') ?? '-' }} – NPSN : {{ setting('app_npsn') ?? '-' }}</p>
+                        <p>Email : {{ setting('app_email') ?? '-' }}</p>
+                        <p style="text-transform: uppercase;">{{ setting('app_village') ?? '-' }} -
+                            {{ setting('app_district') ?? '-' }} -
+                            {{ setting('app_city') ?? '-' }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="address-blue">
+                Sekretariat : {{ setting('app_mailing_address') ?? '-' }} {{ setting('app_postal_code') ?? '-' }} –
+                Telp : {{ setting('app_phone') ?? '-' }}
+            </div>
+        </div>
+
+        <h2 class="title">SURAT KETERANGAN AKTIF MENGAJAR</h2>
+        <p style="text-align: center; margin-top: 3px;">Nomor : {{ $active_teaching->number ?? '<<< Nomor Surat >>>' }}
+        </p>
+
+        <div class="content">
+            <p>Yang bertandatangan di bawah ini Kepala Sekolah {{ setting('app_school_name') ?? '-' }} dengan ini
+                menerangkan dengan sebenarnya bahwa :</p>
+
+            <table style="margin-left: 40px;">
+                <tr class="text-capitalize">
+                    <td width="150">Nama</td>
+                    <td>: {{ $active_teaching->teacher_name }}</td>
+                </tr>
+                <tr class="text-capitalize">
+                    <td>Tempat/Tgl Lahir</td>
+                    <td>: {{ $active_teaching->birth_place }}, {{ formatDate($active_teaching->birth_date) }}</td>
+                </tr>
+                <tr class="text-capitalize">
+                    <td>NUPTK</td>
+                    <td>: {{ $active_teaching->nuptk }}</td>
+                </tr>
+                <tr class="text-capitalize">
+                    <td>Pendidikan</td>
+                    <td>: {{ $active_teaching->education }}</td>
+                </tr>
+                <tr class="text-capitalize">
+                    <td>Jumlah Jam Mengajar</td>
+                    <td>: {{ $active_teaching->teaching_hours }}</td>
+                </tr>
+                <tr class="text-capitalize">
+                    <td>Alamat</td>
+                    <td>: {{ $active_teaching->teacher_address }}</td>
+                </tr>
+            </table>
+
+            <p>Menerangkan bahwa Guru tersebut benar-benar mengajar di {{ setting('app_school_name') ?? '-' }} yang
+                saya pimpin, mulai tanggal <strong>{{ formatDate($active_teaching->tmt) }}</strong> diangkat menjadi
+                guru tetap di {{ setting('app_school_name') ?? '-' }} dan masih aktif mengajar hingga sekarang.</p>
+
+            <p>Guru tersebut ditugaskan mengajar kelas 7, kelas 8, dan kelas 9. Dan guru tersebut telah melaksanakan
+                tugasnya dengan baik dan bertanggung jawab.</p>
+
+            <p style="text-indent: 40px; margin-top: 20px;">Demikian surat keterangan mengajar ini dibuat dengan
+                sebenarnya, untuk digunakan sebagaimana mestinya.</p>
+        </div>
+
+        <div class="footer">
+            <div style="width: max-content; margin-left: auto; text-align: center;">
+                <p style="margin: 0; text-transform: capitalize;">{{ setting('app_village') ?? '-' }},
+                    {{ formatDate(now()) }}</p>
+                <p style="margin: 0 0 10px 0;">{{ setting('app_occupation') ?? '-' }}</p>
+                <p style="margin: 0 0 10px 0;">{{ setting('app_school_name') ?? '-' }}</p>
+                <img src="{{ setting('app_ttd') !== null ? asset('storage/' . setting('app_ttd')) : asset('assets/images/fake-ttd.png') }}"
+                    alt="TTD" style="width: 85px;">
+                <p style="text-decoration: underline; margin: 0; text-transform: uppercase;">
+                    <strong>{{ setting('app_lead') ?? '-' }}</strong>
+                </p>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>
