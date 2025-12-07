@@ -9,8 +9,13 @@ class ProfileController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke(Request $request)
+    public function profile(Request $request)
     {
         return view('dashboard.profiles.index');
+    }
+
+    public function siteProfile(Request $request)
+    {
+        return view('pages.profile');
     }
 }

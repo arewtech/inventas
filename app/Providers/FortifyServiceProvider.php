@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Contracts\RegisterResponse;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -20,7 +21,17 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->instance(RegisterResponse::class, new class implements RegisterResponse {
+            public function toResponse($request)
+            {
+                // If user role is 'user', redirect to homepage, otherwise to dashboard
+                if (auth()->user()->role === 'user') {
+                    return redirect('/');
+                }
+
+                return redirect('/dashboard');
+            }
+        });
     }
 
     /**
@@ -41,6 +52,10 @@ class FortifyServiceProvider extends ServiceProvider
 
         Fortify::loginView(function () {
             return view('auth.login');
+        });
+
+        Fortify::registerView(function () {
+            return view('auth.register');
         });
 
         RateLimiter::for('two-factor', function (Request $request) {

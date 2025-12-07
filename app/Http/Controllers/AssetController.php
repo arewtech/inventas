@@ -67,7 +67,7 @@ class AssetController extends Controller
             'condition' => 'required|string|in:baik,rusak',
             'location_id' => 'required|exists:locations,id',
             'additional_info' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $data = $request->all();
@@ -131,7 +131,7 @@ class AssetController extends Controller
             'condition' => 'required|string|in:baik,rusak',
             'location_id' => 'required|exists:locations,id',
             'additional_info' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $data = $request->all();

@@ -50,15 +50,15 @@
                                     <a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a>
                                 </li>
                             @else
-                                {{-- <li>
+                                <li>
                                     <a class="dropdown-item" href="{{ route('profile-site') }}">Edit Profil</a>
-                                </li> --}}
+                                </li>
                                 <li>
                                     <a class="dropdown-item" href="{{ route('histories-site') }}">List Histori</a>
                                 </li>
-                                {{-- <li>
+                                <li>
                                     <a class="dropdown-item" href="{{ route('change-password-site') }}">Ubah Password</a>
-                                </li> --}}
+                                </li>
                             @endif
                             <hr style="margin: 8px 0" />
                             <li>
@@ -73,17 +73,6 @@
                     </li>
                 @endguest
             </ul>
-            <!-- <form class="d-flex" role="search">
-            <input
-              class="form-control me-2"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-            />
-            <button class="btn btn-outline-success" type="submit">
-              Search
-            </button>
-          </form> -->
         </div>
     </div>
 </nav>
