@@ -8,13 +8,14 @@
                     <!-- content title -->
                     <div class="content-title">
                         <h1 class="text-dark intro-title fw-medium">
-                            Selamat Datang di Forum
-                            <span class="text-primary-subtle">Pengaduan</span> Masyarakat
-                            Online
+                            Selamat Datang di Platform
+                            <span class="text-primary-subtle">Pembuatan Surat</span> Online Al Khairiyah
                         </h1>
                         <p class="format-school">
-                            Anda dapat mengirimkan pengaduan atau keluhan Anda secara
-                            online, dan kami akan segera menindaklanjuti.
+                            Platform pembuatan surat online untuk keperluan administrasi
+                            Yayasan Al-Khairiyah dan SMP Al Khairiyah. Buat surat-surat
+                            resmi seperti surat keterangan mutasi, surat keterangan aktif
+                            mengajar, dan berbagai surat resmi lainnya secara online dengan mudah.
                         </p>
                         <p class="format-school mt-2"></p>
                         <div class="d-flex gap-2 flex-wrap mt-4 justify-content-center justify-content-md-start">
