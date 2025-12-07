@@ -4,10 +4,9 @@
             <div class="col-lg-4 col-md-6">
                 <h5 class="mb-3">Tentang Kami</h5>
                 <p class="text-sm">
-                    {{ setting('app_title') ?? 'My App' }} adalah platform pengaduan
-                    masyarakat online yang
-                    memungkinkan Anda mengirimkan pengaduan atau keluhan Anda secara
-                    online, dan juga penyedia layanan pembuatan surat online.
+                    {{ setting('app_title') ?? 'My App' }} adalah platform penyedia layanan pembuatan surat online,
+                    dirancang untuk memudahkan pengguna dalam membuat berbagai jenis surat resmi secara cepat dan
+                    efisien.
                 </p>
             </div>
             <div class="col-lg-2 col-md-3">
@@ -50,15 +49,13 @@
             </div>
             <div class="col-md-6 text-end">
                 <!-- Tambahkan ikon media sosial atau tautan ke halaman media sosial di sini -->
-                <a href="{{ setting('app_facebook') ?? '' }}" target="_blank"
-                    class="text-light me-2 text-decoration-none">
+                <a href="{{ setting('app_facebook') ?? '#' }}" class="text-light me-2 text-decoration-none">
                     <i class="bi bi-facebook"></i>
                 </a>
-                <a href="{{ setting('app_twitter') ?? '' }}" target="_blank"
-                    class="text-light me-2 text-decoration-none">
+                <a href="{{ setting('app_twitter') ?? '#' }}" class="text-light me-2 text-decoration-none">
                     <i class="bi bi-twitter"></i>
                 </a>
-                <a href="{{ setting('app_instagram') ?? '' }}" target="_blank" class="text-light text-decoration-none">
+                <a href="{{ setting('app_instagram') ?? '#' }}" class="text-light text-decoration-none">
                     <i class="bi bi-instagram"></i>
                 </a>
             </div>
