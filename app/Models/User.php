@@ -77,4 +77,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(TransferIn::class);
     }
+
+    public function transferOuts()
+    {
+        return $this->hasMany(TransferOut::class);
+    }
 }

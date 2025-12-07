@@ -20,11 +20,24 @@
                                 <div class="card-body">
                                     <h5 class="card-title">Surat Keterangan Mutasi Terima 📥</h5>
                                     <p class="card-text line-clamp-3">
-                                        Surat keterangan penghasilan adalah surat yang dikeluarkan
-                                        oleh instansi atau perusahaan yang berisi informasi
-                                        tentang penghasilan seseorang.
+                                        Surat keterangan mutasi terima adalah surat yang menerangkan bahwa
+                                        sekolah menerima siswa pindahan dari sekolah lain.
                                     </p>
                                     <a href="{{ route('transfer-in-sites.create') }}"
+                                        class="btn btn-sm btn-outline-primary">Buat
+                                        Surat</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="card card-latter shadow-xd">
+                                <div class="card-body">
+                                    <h5 class="card-title">Surat Keterangan Mutasi Keluar 📤</h5>
+                                    <p class="card-text line-clamp-3">
+                                        Surat keterangan mutasi keluar adalah surat yang menerangkan bahwa
+                                        siswa mengajukan pindah dari sekolah ini ke sekolah lain.
+                                    </p>
+                                    <a href="{{ route('transfer-out-sites.create') }}"
                                         class="btn btn-sm btn-outline-primary">Buat
                                         Surat</a>
                                 </div>

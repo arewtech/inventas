@@ -86,6 +86,15 @@
                         <span class="hide-menu">Surat Mutasi Terima</span>
                     </a>
                 </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link {{ Route::is('transfer-outs*') ? 'active' : '' }}"
+                        href="{{ route('transfer-outs.index') }}" aria-expanded="false">
+                        <span>
+                            <i class="ti ti-mail-forward"></i>
+                        </span>
+                        <span class="hide-menu">Surat Mutasi Keluar</span>
+                    </a>
+                </li>
                 <li class="nav-small-cap">
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                     <span class="hide-menu">Lainnya</span>

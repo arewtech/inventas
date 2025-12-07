@@ -15,6 +15,8 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\TransferInController;
 use App\Http\Controllers\TransferInSiteController;
+use App\Http\Controllers\TransferOutController;
+use App\Http\Controllers\TransferOutSiteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,10 +34,12 @@ Route::get('faq', [FrontsideController::class, 'faqSite'])->name('faq-site');
 Route::get('/histories', [HistorySiteController::class, 'index'])->name('histories-site')->middleware(['auth']);
 // User print routes
 Route::get('/letters/transfer-ins/{transfer_in}/print', [PrintLetterController::class, 'userPrint'])->name('letters.transfer-ins.print')->middleware(['auth']);
+Route::get('/letters/transfer-outs/{transfer_out}/print', [PrintLetterController::class, 'userPrintOut'])->name('letters.transfer-outs.print')->middleware(['auth']);
 // Route::get('/change-password', [FrontsideController::class, 'changePasswordSite'])->name('change-password-site')->middleware(['auth', 'isUser']);
 Route::get('/letters', [FrontsideController::class, 'letterSite'])->name('letters-site')->middleware('auth');
 Route::middleware('auth')->group(function () {
-Route::resource('transfer-in-sites', TransferInSiteController::class);
+    Route::resource('transfer-in-sites', TransferInSiteController::class);
+    Route::resource('transfer-out-sites', TransferOutSiteController::class);
 });
 // Route::redirect('/', '/dashboard');
 Route::prefix('/dashboard')->middleware('auth')->group(function () {
@@ -56,12 +60,15 @@ Route::prefix('/dashboard')->middleware('auth')->group(function () {
     Route::post('/app-settings', [SettingController::class, 'store'])->name('settings.store');
 
     // letters routes
-    // blank style
+    // print routes
     Route::get('/transfer-ins/{transfer_in}/print', [PrintLetterController::class, 'incomeCertificatePrint'])->name('transfer-ins.print');
+    Route::get('/transfer-outs/{transfer_out}/print', [PrintLetterController::class, 'transferOutPrint'])->name('transfer-outs.print');
     // update nomer surat
     Route::put('/transfer-ins/{transfer_in}/update-number', [TransferInController::class, 'updateNumber'])->name('transfer-ins.update-number');
-    // end
+    Route::put('/transfer-outs/{transfer_out}/update-number', [TransferOutController::class, 'updateNumber'])->name('transfer-outs.update-number');
+    // resources
     Route::resource('transfer-ins', TransferInController::class);
+    Route::resource('transfer-outs', TransferOutController::class);
 });
 
 Route::get('/asset/{asset}/view', [FrontsideController::class, 'publicView'])->name('assets.public.view');

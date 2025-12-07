@@ -9,8 +9,9 @@ class HistorySiteController extends Controller
     public function index(Request $request)
     {
         // return $user;
-        $user = auth()->user()->load(['transferIns']);
+        $user = auth()->user()->load(['transferIns', 'transferOuts']);
         $combinedHistories = collect($user->transferIns)
+        ->concat($user->transferOuts)
         // ->concat($user->businessDomicileCertificates)
         // ->concat($user->birthCertificates)
         // ->concat($user->deathCertificates)
