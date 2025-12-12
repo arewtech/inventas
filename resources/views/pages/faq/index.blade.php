@@ -17,7 +17,8 @@
                             data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body">
                                 <p>
-                                    {{ setting('app_title') ?? 'My App' }} adalah platform pembuatan surat online untuk sekolah yang dapat
+                                    {{ setting('app_title') ?? 'My App' }} adalah platform pembuatan surat online untuk
+                                    sekolah yang dapat
                                     Anda gunakan untuk membuat berbagai jenis surat secara online seperti
                                     surat keterangan mutasi terima, surat keterangan mutasi keluar,
                                     surat keterangan aktif mengajar, dan lain-lain.
@@ -36,8 +37,10 @@
                             data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body">
                                 <p>
-                                    Ya, Aplikasi {{ setting('app_title') ?? 'My App' }} sangat membantu bagi masyarakat. Dengan
-                                    {{ setting('app_title') ?? 'My App' }} tanpa harus datang langsung ke sekolah. Platform ini
+                                    Ya, Aplikasi {{ setting('app_title') ?? 'My App' }} sangat membantu bagi masyarakat.
+                                    Dengan
+                                    {{ setting('app_title') ?? 'My App' }} tanpa harus datang langsung ke sekolah. Platform
+                                    ini
                                     memudahkan masyarakat dalam membuat surat-surat seperti surat
                                     keterangan mutasi, surat keterangan aktif mengajar, dan berbagai
                                     surat resmi sekolah lainnya.
@@ -57,8 +60,10 @@
                             aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body">
                                 <p>
-                                    Ya, Aplikasi {{ setting('app_title') ?? 'My App' }} tersedia untuk umum. Siapa saja dapat
-                                    mendaftar dan menggunakan layanan pembuatan surat online di {{ setting('app_title') ?? 'My App' }}.
+                                    Ya, Aplikasi {{ setting('app_title') ?? 'My App' }} tersedia untuk umum. Siapa saja
+                                    dapat
+                                    mendaftar dan menggunakan layanan pembuatan surat online di
+                                    {{ setting('app_title') ?? 'My App' }}.
                                     Anda hanya perlu membuat akun terlebih dahulu untuk dapat mengakses
                                     dan membuat surat-surat yang Anda butuhkan.
                                 </p>
@@ -77,7 +82,8 @@
                             data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body">
                                 <p>
-                                    Setelah mengisi formulir surat di {{ setting('app_title') ?? 'My App' }}, surat Anda akan masuk
+                                    Setelah mengisi formulir surat di {{ setting('app_title') ?? 'My App' }}, surat Anda
+                                    akan masuk
                                     ke dalam sistem untuk diproses oleh admin sekolah. Anda dapat melihat
                                     status surat di halaman riwayat. Ketika surat Anda sudah disetujui
                                     (approved) oleh admin dan nomor surat sudah diisi, Anda dapat langsung
@@ -100,11 +106,12 @@
                             data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body">
                                 <p>
-                                    Layanan pembuatan surat di platform {{ setting('app_title') ?? 'My App' }} ini khusus diperuntukkan
+                                    Layanan pembuatan surat di platform {{ setting('app_title') ?? 'My App' }} ini khusus
+                                    diperuntukkan
                                     untuk keperluan surat-menyurat yang berkaitan dengan Yayasan Al-Khairiyah
-                                    dan Sekolah Al Khairiyah, terkhusus untuk SMP Al Khairiyah. Surat-surat
+                                    dan Sekolah Al Khairiyah, terkhusus untuk SMA Al Khairiyah. Surat-surat
                                     yang dibuat melalui platform ini hanya berlaku untuk keperluan administrasi
-                                    dan keterangan resmi dari SMP Al Khairiyah.
+                                    dan keterangan resmi dari SMA Al Khairiyah.
                                 </p>
                             </div>
                         </div>

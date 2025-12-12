@@ -186,7 +186,7 @@
         <h2 class="title">SURAT KETERANGAN MUTASI TERIMA</h2>
         <p style="text-align: center; margin-top: 3px;">Nomor : {{ $transfer_in->number }}</p>
         <div class="content">
-            <p>Yang bertandatangan di bawah ini Kepala Sekolah SMP Al Khairiyah Sumberlele Kraksaan Probolinggo dengan
+            <p>Yang bertandatangan di bawah ini Kepala Sekolah SMA Al Khairiyah Sumberlele Kraksaan Probolinggo dengan
                 ini
                 menerangkan dengan sebenarnya bahwa :</p>
             <table style="margin-left: 40px;">
@@ -208,7 +208,7 @@
                 </tr>
                 <tr class="text-capitalize">
                     <td>Kelas</td>
-                    <td>: {{ $transfer_in->class }} SMP</td>
+                    <td>: {{ $transfer_in->class }} SMA</td>
                 </tr>
                 <tr class="text-capitalize">
                     <td>Sekolah asal</td>
@@ -223,14 +223,14 @@
             <table style="margin-left: 40px;">
                 <tr class="text-capitalize">
                     <td width="150">Nama</td>
-                    <td>: SMP Al Khairiyah</td>
+                    <td>: SMA Al Khairiyah</td>
                 </tr>
                 <tr class="text-capitalize">
                     <td>Alamat</td>
                     <td>: {{ setting('app_address') ?? '-' }}</td>
                 </tr>
             </table>
-            <p>Kami bersedia menerima pindahan anak tersebut ke SMP Al Khairiyah dengan ketentuan sebagai berikut :</p>
+            <p>Kami bersedia menerima pindahan anak tersebut ke SMA Al Khairiyah dengan ketentuan sebagai berikut :</p>
             <ol style="margin-left: 20px;">
                 <li>Menunjukkan surat mutasi</li>
                 <li>NISN (Nomor Induk Siswa Nasional)</li>

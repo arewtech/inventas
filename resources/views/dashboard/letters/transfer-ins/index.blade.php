@@ -57,7 +57,7 @@
                                         </span>
                                     </td>
                                     <td>
-                                        {{ $item->class }} SMP
+                                        {{ $item->class }} SMA
                                     </td>
                                     <td>
                                         <p class="fs-3 text-dark mb-0">
@@ -178,7 +178,7 @@
                                                             </tr>
                                                             <tr>
                                                                 <td class="text-muted fw-semibold"> Kelas :</td>
-                                                                <td> {{ $item->class }} SMP</td>
+                                                                <td> {{ $item->class }} SMA</td>
                                                             </tr>
                                                             <tr>
                                                                 <td class="text-muted fw-semibold"> Sekolah Asal :</td>

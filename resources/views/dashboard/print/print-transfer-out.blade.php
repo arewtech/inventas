@@ -186,7 +186,7 @@
         <p style="text-align: center; margin-top: 3px;">Nomor : {{ $transfer_out->number }}</p>
         <div class="content">
             <p>Yang bertandatangan di bawah ini {{ setting('app_occupation') ?? '-' }}
-                {{ setting('app_school_name') ?? 'SMP Al Khairiyah' }}
+                {{ setting('app_school_name') ?? 'SMA Al Khairiyah' }}
                 {{ setting('app_village') ?? 'Sumberlele' }} {{ setting('app_district') ?? 'Kraksaan' }}
                 {{ setting('app_city') ?? 'Probolinggo' }} dengan ini menerangkan sebenarnya bahwa :</p>
             <table style="margin-left: 40px;">
@@ -208,7 +208,7 @@
                 </tr>
                 <tr class="text-capitalize">
                     <td>Kelas</td>
-                    <td>: {{ $transfer_out->class }} SMP</td>
+                    <td>: {{ $transfer_out->class }} SMA</td>
                 </tr>
                 <tr class="text-capitalize">
                     <td>NISN</td>
@@ -220,7 +220,7 @@
                 </tr>
             </table>
             <p>Adalah benar yang namanya tersebut di atas tercatat sebagai siswa
-                {{ setting('app_school_name') ?? 'SMP Al Khairiyah' }} {{ setting('app_village') ?? 'Sumberlele' }}
+                {{ setting('app_school_name') ?? 'SMA Al Khairiyah' }} {{ setting('app_village') ?? 'Sumberlele' }}
                 Kraksaan Kabupaten {{ setting('app_city') ?? 'Probolinggo' }}.</p>
             <table style="margin-left: 80px;">
                 <tr class="text-capitalize">
@@ -233,7 +233,7 @@
                 </tr>
             </table>
             <p>Setelah pindah, siswa tersebut tidak dapat masuk kembali ke
-                {{ setting('app_school_name') ?? 'SMP Al Khairiyah' }} {{ setting('app_village') ?? 'Sumberlele' }}
+                {{ setting('app_school_name') ?? 'SMA Al Khairiyah' }} {{ setting('app_village') ?? 'Sumberlele' }}
                 Kraksaan Kab. {{ setting('app_city') ?? 'Probolinggo' }}.</p>
             <p>Demikian surat keterangan pindah ini dibuat untuk dapat
                 dipergunakan sebagaimana mestinya, atas perhatian dan kerja samanya kami sampaikan terimakasih.</p>

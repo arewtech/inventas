@@ -166,7 +166,7 @@
                                         </label>
                                         <input type="text" class="form-control" name="app_school_name"
                                             value="{{ setting('app_school_name') }}" id="app_school_name"
-                                            placeholder="SMP Al Khairiyah">
+                                            placeholder="SMA Al Khairiyah">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
