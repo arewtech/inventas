@@ -75,15 +75,21 @@
                                         </p>
                                     </td>
                                     <td>
-                                        <form action="{{ route('transfer-ins.update', $item->id) }}" method="post">
-                                            @csrf
-                                            @method('put')
-                                            <a onclick="this.closest('form').submit()" href="javascript:void(0)"
+                                        @if ($item->status === 'pending' && $item->number !== null)
+                                            <a href="javascript:void(0)" data-bs-toggle="modal"
+                                                data-bs-target="#modal-approve-{{ $item->id }}"
                                                 class="mb-0 text-capitalize">
-                                                <span class="badge {{ $item->status_color }} rounded-3 fw-semibold fs-2">
+                                                <span
+                                                    class="text-capitalize badge {{ $item->status_color }} rounded-3 fw-semibold fs-2">
                                                     {{ $item->status }}
+                                                </span>
                                             </a>
-                                        </form>
+                                        @else
+                                            <span
+                                                class="text-capitalize badge {{ $item->status_color }} rounded-3 fw-semibold fs-2">
+                                                {{ $item->status }}
+                                            </span>
+                                        @endif
                                     </td>
                                     <td>
                                         <div class="dropdown dropstart">
@@ -207,6 +213,101 @@
                                             </div>
                                         </div>
                                         <!-- End Modal detail letter -->
+
+                                        <!-- Modal Approve -->
+                                        <div class="modal fade" id="modal-approve-{{ $item->id }}" tabindex="-1"
+                                            aria-labelledby="mySmallModalLabel" aria-hidden="true"
+                                            style="display: none;">
+                                            <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                                                <div class="modal-content">
+                                                    <div class="modal-header d-flex align-items-center">
+                                                        <h4 class="modal-title" id="myModalLabel">
+                                                            Konfirmasi Approve Surat
+                                                        </h4>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <h6> Title : <span
+                                                                class="fw-normal text-capitalize">{{ $item->letter ?? '-' }}</span>
+                                                        </h6>
+                                                        <h6> Nomor Surat : <span
+                                                                class="fw-normal">{{ $item->number ?? '-' }}</span></h6>
+                                                        <table class="table table-bordered mt-3">
+                                                            <tr>
+                                                                <td class="text-muted fw-semibold"> Dibuat oleh :</td>
+                                                                <td> {{ $item->user->name }} </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-muted fw-semibold"> Nama Siswa :</td>
+                                                                <td class="text-capitalize"> {{ $item->student_name }}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-muted fw-semibold"> Tempat, Tanggal Lahir :
+                                                                </td>
+                                                                <td>
+                                                                    {{ $item->birth_place }},
+                                                                    {{ formatDate($item->birth_date) }}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-muted fw-semibold"> Jenis Kelamin :</td>
+                                                                <td class="text-capitalize">
+                                                                    {{ $item->gender == 'male' ? 'Laki-laki' : 'Perempuan' }}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-muted fw-semibold"> Agama :</td>
+                                                                <td class="text-capitalize"> {{ $item->religion }} </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-muted fw-semibold"> Kelas :</td>
+                                                                <td> {{ $item->class }} SMA</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-muted fw-semibold"> Sekolah Asal :</td>
+                                                                <td> {{ $item->previous_school }} </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-muted fw-semibold"> Alamat Siswa :</td>
+                                                                <td> {{ $item->student_address }} </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-muted fw-semibold"> Tanggal buat : </td>
+                                                                <td> {{ formatDate($item->created_at) }}
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-muted fw-semibold"> Status :</td>
+                                                                <td>
+                                                                    <span
+                                                                        class="text-capitalize badge {{ $item->status_color }} rounded-3 fw-semibold fs-2">
+                                                                        {{ $item->status }}
+                                                                    </span>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                        <div class="alert alert-info">
+                                                            <i class="ti ti-info-circle"></i>
+                                                            Pastikan semua data sudah benar sebelum menyetujui surat ini.
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-light"
+                                                            data-bs-dismiss="modal">Batal</button>
+                                                        <form action="{{ route('transfer-ins.update', $item->id) }}"
+                                                            method="post" class="d-inline">
+                                                            @csrf
+                                                            @method('put')
+                                                            <button type="submit" class="btn btn-primary">
+                                                                <i class="ti ti-check"></i> Approve Surat
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- End Modal Approve -->
 
                                         <!-- Modal -->
                                         <div class="modal fade" id="modal-update-{{ $item->id }}" tabindex="-1"
