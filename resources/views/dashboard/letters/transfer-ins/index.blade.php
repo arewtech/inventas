@@ -233,6 +233,17 @@
                                                         </h6>
                                                         <h6> Nomor Surat : <span
                                                                 class="fw-normal">{{ $item->number ?? '-' }}</span></h6>
+                                                        @if ($item->number !== null)
+                                                            <div class="d-flex align-items-center gap-1">
+                                                                <h6 class="m-0">
+                                                                    Print :
+                                                                </h6>
+                                                                <a href="{{ route('transfer-ins.print', $item->id) }}"
+                                                                    class="d-flex align-items-center gap-3"
+                                                                    target="_blank">
+                                                                    <i class="fs-4 ti ti-printer fs-5"></i></a>
+                                                            </div>
+                                                        @endif
                                                         <table class="table table-bordered mt-3">
                                                             <tr>
                                                                 <td class="text-muted fw-semibold"> Dibuat oleh :</td>
