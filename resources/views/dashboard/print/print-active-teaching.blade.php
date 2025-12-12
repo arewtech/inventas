@@ -162,7 +162,7 @@
         <div class="header">
             <div class="header-top">
                 <div class="header-logo">
-                    <img src="{{ asset('assets/images/logos/logo-app.png') }}" alt="Logo" class="logo">
+                    <img src="{{ asset('assets/images/logos/logo-surat.png') }}" alt="Logo" class="logo">
                 </div>
                 <div class="header-text">
                     <h1 class="step-1">{{ setting('app_foundation_name') ?? '-' }}</h1>
@@ -243,6 +243,9 @@
             </div>
         </div>
     </main>
+    <script>
+        window.print();
+    </script>
 </body>
 
 </html>
