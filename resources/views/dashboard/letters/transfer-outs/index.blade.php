@@ -57,7 +57,7 @@
                                         </span>
                                     </td>
                                     <td>
-                                        {{ $item->class }} SMP
+                                        {{ $item->class }} SMA
                                     </td>
                                     <td>
                                         <p class="fs-3 text-dark mb-0">
@@ -138,7 +138,7 @@
                                                         <h6> Di setujui oleh :
                                                             {{ $item->responseBy->name ?? '-' }}
                                                         </h6>
-                                                        @if ($item->number !== null && $item->status === 'approved')
+                                                        @if ($item->number !== null)
                                                             <div class="d-flex align-items-center gap-1">
                                                                 <h6 class="m-0">
                                                                     Print :
@@ -178,7 +178,7 @@
                                                             </tr>
                                                             <tr>
                                                                 <td class="text-muted fw-semibold"> Kelas :</td>
-                                                                <td> {{ $item->class }} SMP</td>
+                                                                <td> {{ $item->class }} SMA</td>
                                                             </tr>
                                                             <tr>
                                                                 <td class="text-muted fw-semibold"> NISN :</td>

@@ -12,7 +12,7 @@ class PrintLetterController extends Controller
     public function transferInPrint(TransferIn $transfer_in)
     {
         $transfer_in =  $transfer_in->load(['user', 'responseBy']);
-        if ($transfer_in->status == 'pending') {
+        if ($transfer_in->number == null) {
             abort(404);
         }
         return view('dashboard.print.print-transfer-in', compact('transfer_in'));
@@ -37,7 +37,7 @@ class PrintLetterController extends Controller
     public function transferOutPrint(TransferOut $transfer_out)
     {
         $transfer_out = $transfer_out->load(['user', 'responseBy']);
-        if ($transfer_out->status == 'pending') {
+        if ($transfer_out->number == null) {
             abort(404);
         }
         return view('dashboard.print.print-transfer-out', compact('transfer_out'));
@@ -62,7 +62,7 @@ class PrintLetterController extends Controller
     public function activeTeachingPrint(ActiveTeaching $active_teaching)
     {
         $active_teaching = $active_teaching->load(['user', 'responseBy']);
-        if ($active_teaching->status == 'pending') {
+        if ($active_teaching->number == null) {
             abort(404);
         }
         return view('dashboard.print.print-active-teaching', compact('active_teaching'));

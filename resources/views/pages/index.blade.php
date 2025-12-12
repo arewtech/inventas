@@ -13,7 +13,7 @@
                         </h1>
                         <p class="format-school">
                             Platform pembuatan surat online untuk keperluan administrasi
-                            Yayasan Al-Khairiyah dan SMP Al Khairiyah. Buat surat-surat
+                            Yayasan Al-Khairiyah dan SMA Al Khairiyah. Buat surat-surat
                             resmi seperti surat keterangan mutasi, surat keterangan aktif
                             mengajar, dan berbagai surat resmi lainnya secara online dengan mudah.
                         </p>

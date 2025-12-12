@@ -73,12 +73,12 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label for="class" class="form-label">Kelas ( SMP )</label>
+                                <label for="class" class="form-label">Kelas ( SMA )</label>
                                 <select class="form-select" id="class" name="class" required>
                                     <option value="">Pilih Kelas</option>
-                                    <option value="7" {{ old('class') == '7' ? 'selected' : '' }}>7</option>
-                                    <option value="8" {{ old('class') == '8' ? 'selected' : '' }}>8</option>
-                                    <option value="9" {{ old('class') == '9' ? 'selected' : '' }}>9</option>
+                                    <option value="10" {{ old('class') == '10' ? 'selected' : '' }}>10</option>
+                                    <option value="11" {{ old('class') == '11' ? 'selected' : '' }}>11</option>
+                                    <option value="12" {{ old('class') == '12' ? 'selected' : '' }}>12</option>
                                 </select>
                             </div>
                             <div class="mb-3">
