@@ -9,7 +9,7 @@ class Location extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'responsible_name', 'responsible_phone'];
 
     public function assets()
     {

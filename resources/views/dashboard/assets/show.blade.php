@@ -79,6 +79,16 @@
                                     <td>{{ $asset->additional_info ?? '-' }}</td>
                                 </tr>
                                 <tr>
+                                    <th class="bg-light">Penanggung Jawab</th>
+                                    <td>{{ $asset->location ? $asset->location->responsible_name : $asset->location ?? '-' }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light">No. Telepon Penanggung Jawab</th>
+                                    <td>{{ $asset->location ? $asset->location->responsible_phone : $asset->location ?? '-' }}
+                                    </td>
+                                </tr>
+                                <tr>
                                     <th class="bg-light">Dibuat Pada</th>
                                     <td>{{ $asset->created_at->format('d F Y, H:i') }}</td>
                                 </tr>
