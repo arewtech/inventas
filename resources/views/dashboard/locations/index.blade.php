@@ -19,6 +19,8 @@
                                     <tr class="text-muted fw-semibold">
                                         <th scope="col">No</th>
                                         <th scope="col">Nama</th>
+                                        <th scope="col">Penanggung Jawab</th>
+                                        <th scope="col">No. Telepon</th>
                                         <th scope="col">Dibuat</th>
                                         <th></th>
                                     </tr>
@@ -31,6 +33,16 @@
                                             </td>
                                             <td>
                                                 <span class="text-capitalize">{{ $location->name }}</span>
+                                            </td>
+                                            <td>
+                                                <span class="text-capitalize">
+                                                    {{ $location->responsible_name ?? '-' }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span>
+                                                    {{ $location->responsible_phone ?? '-' }}
+                                                </span>
                                             </td>
                                             <td>
                                                 <p class="fs-3 text-dark mb-0">
@@ -90,10 +102,31 @@
                                                                             <label for="name" class="form-label">Nama
                                                                                 Lokasi</label>
                                                                             <input type="text" class="form-control"
-                                                                                id="name" value="{{ $location->name }}"
+                                                                                id="name"
+                                                                                value="{{ $location->name }}"
                                                                                 name="name"
                                                                                 placeholder="Contoh: Ruang Kelas 1A"
                                                                                 required>
+                                                                        </div>
+                                                                        <div class="mb-3">
+                                                                            <label for="responsible_name"
+                                                                                class="form-label">Penanggung
+                                                                                Jawab</label>
+                                                                            <input type="text" class="form-control"
+                                                                                id="responsible_name"
+                                                                                value="{{ $location->responsible_name }}"
+                                                                                name="responsible_name"
+                                                                                placeholder="Masukkan nama penanggung jawab">
+                                                                        </div>
+                                                                        <div class="mb-3">
+                                                                            <label for="responsible_phone"
+                                                                                class="form-label">No. Telepon
+                                                                                Penanggung Jawab</label>
+                                                                            <input type="number" class="form-control"
+                                                                                id="responsible_phone"
+                                                                                value="{{ $location->responsible_phone }}"
+                                                                                name="responsible_phone"
+                                                                                placeholder="Masukkan no. telepon penanggung jawab">
                                                                         </div>
                                                                         <div class="d-flex justify-content-end">
                                                                             <button type="submit"
@@ -138,6 +171,32 @@
                                     <input type="text" class="form-control @error('name') is-invalid @enderror"
                                         id="create-name" name="name" placeholder="Contoh: Ruang Kelas 1A" required>
                                     @error('name')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                                <div class="mb-3">
+                                    <label for="create-responsible_name" class="form-label">Penanggung
+                                        Jawab</label>
+                                    <input type="text"
+                                        class="form-control @error('responsible_name') is-invalid @enderror"
+                                        id="create-responsible_name" name="responsible_name"
+                                        placeholder="Masukkan nama penanggung jawab">
+                                    @error('responsible_name')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
+                                <div class="mb-3">
+                                    <label for="create-responsible_phone" class="form-label">No. Telepon
+                                        Penanggung Jawab</label>
+                                    <input type="number"
+                                        class="form-control @error('responsible_phone') is-invalid @enderror"
+                                        id="create-responsible_phone" name="responsible_phone"
+                                        placeholder="Masukkan no. telepon penanggung jawab">
+                                    @error('responsible_phone')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>

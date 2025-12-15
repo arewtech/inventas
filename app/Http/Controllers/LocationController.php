@@ -31,9 +31,11 @@ class LocationController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255|unique:locations,name',
+            'responsible_name' => 'nullable|string|max:255',
+            'responsible_phone' => 'nullable|string|max:20',
         ]);
 
-        Location::create($request->only('name'));
+        Location::create($request->only(['name', 'responsible_name', 'responsible_phone']));
 
         return redirect()->route('locations.index')->with('success', 'Lokasi berhasil ditambahkan.');
     }
@@ -61,9 +63,11 @@ class LocationController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255|unique:locations,name,' . $location->id,
+            'responsible_name' => 'nullable|string|max:255',
+            'responsible_phone' => 'nullable|string|max:20',
         ]);
 
-        $location->update($request->only('name'));
+        $location->update($request->only(['name', 'responsible_name', 'responsible_phone']));
 
         return redirect()->route('locations.index')->with('success', 'Lokasi berhasil diperbarui.');
     }
