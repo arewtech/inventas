@@ -86,14 +86,24 @@ class TransferInController extends Controller
 
     public function updateNumber(Request $request, TransferIn $transfer_in)
     {
-        $request->validate([
-            'number' => 'required|string'
-        ]);
+        try {
+            $request->validate([
+                'number' => 'required|string|unique:transfer_ins,number,' . $transfer_in->id
+            ], [
+                'number.required' => 'Nomor surat harus diisi',
+                'number.unique' => 'Nomor surat sudah digunakan'
+            ]);
 
-        $transfer_in->update([
-            'number' => $request->number
-        ]);
+            $transfer_in->update([
+                'number' => $request->number
+            ]);
 
-        return back()->with('success', 'Nomor surat berhasil di update');
+            return back()->with('success', 'Nomor surat berhasil di update');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()
+                ->withErrors($e->validator)
+                ->withInput()
+                ->with('modal_error_id', $transfer_in->id);
+        }
     }
 }

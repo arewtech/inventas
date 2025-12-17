@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('response_by')->nullable()->constrained('users')->onDelete('cascade'); // penyetuju surat
             $table->string('letter')->nullable(); // nama surat
             $table->string('type')->nullable(); // transfer_incoming
-            $table->string('number')->nullable(); // nomor surat
+            $table->string('number')->unique()->nullable(); // nomor surat
             // format data surat
             $table->string('student_name'); // nama siswa
             $table->string('birth_place'); // tempat lahir

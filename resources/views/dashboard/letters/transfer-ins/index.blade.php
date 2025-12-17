@@ -342,13 +342,20 @@
                                                             <div>
                                                                 <label for="number" class="form-label">Nomor
                                                                     Surat</label>
-                                                                <input type="text" id="number" class="form-control"
-                                                                    name="number" value="{{ $item->number }}"
+                                                                <input type="text" id="number"
+                                                                    class="form-control @error('number') is-invalid @enderror"
+                                                                    name="number"
+                                                                    value="{{ old('number', $item->number) }}"
                                                                     placeholder=".../.../.../..." required>
                                                                 <small
                                                                     class="text-muted
                                                                     text-danger">*contoh
                                                                     : <b>470 / 34 / 409.12 / 2024</b></small>
+                                                                @error('number')
+                                                                    <div class="invalid-feedback">
+                                                                        {{ $message }}
+                                                                    </div>
+                                                                @enderror
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
@@ -377,4 +384,19 @@
             </div>
         </div>
     </div>
+
+    @if ($errors->has('number'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                @if (session('modal_error_id'))
+                    const modalId = 'modal-update-{{ session('modal_error_id') }}';
+                    const modalElement = document.getElementById(modalId);
+                    if (modalElement) {
+                        const modal = new bootstrap.Modal(modalElement);
+                        modal.show();
+                    }
+                @endif
+            });
+        </script>
+    @endif
 @endsection
