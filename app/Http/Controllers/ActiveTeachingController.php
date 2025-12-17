@@ -86,14 +86,24 @@ class ActiveTeachingController extends Controller
 
     public function updateNumber(Request $request, ActiveTeaching $activeTeaching)
     {
-        $request->validate([
-            'number' => 'required|string'
-        ]);
+        try {
+            $request->validate([
+                'number' => 'required|string|unique:active_teachings,number,' . $activeTeaching->id
+            ], [
+                'number.required' => 'Nomor surat harus diisi',
+                'number.unique' => 'Nomor surat sudah digunakan'
+            ]);
 
-        $activeTeaching->update([
-            'number' => $request->number
-        ]);
+            $activeTeaching->update([
+                'number' => $request->number
+            ]);
 
-        return back()->with('success', 'Nomor surat berhasil di update');
+            return back()->with('success', 'Nomor surat berhasil di update');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()
+                ->withErrors($e->validator)
+                ->withInput()
+                ->with('modal_error_id', $activeTeaching->id);
+        }
     }
 }
