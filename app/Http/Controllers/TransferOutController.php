@@ -86,14 +86,24 @@ class TransferOutController extends Controller
 
     public function updateNumber(Request $request, TransferOut $transfer_out)
     {
-        $request->validate([
-            'number' => 'required|string'
-        ]);
+        try {
+            $request->validate([
+                'number' => 'required|string|unique:transfer_outs,number,' . $transfer_out->id
+            ], [
+                'number.required' => 'Nomor surat harus diisi',
+                'number.unique' => 'Nomor surat sudah digunakan'
+            ]);
 
-        $transfer_out->update([
-            'number' => $request->number
-        ]);
+            $transfer_out->update([
+                'number' => $request->number
+            ]);
 
-        return back()->with('success', 'Nomor surat berhasil di update');
+            return back()->with('success', 'Nomor surat berhasil di update');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()
+                ->withErrors($e->validator)
+                ->withInput()
+                ->with('modal_error_id', $transfer_out->id);
+        }
     }
 }
