@@ -90,7 +90,20 @@
                                             class="text-capitalize">{{ $asset->location ? $asset->location->name : $asset->location }}</span>
                                     </td>
                                     <td>
-                                        <p class="mb-0">{{ $asset->quantity }}</p>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span
+                                                class="badge bg-success-subtle text-success">{{ $asset->quantity }}</span>
+                                            @if ($asset->total_damaged_quantity > 0)
+                                                <span class="badge bg-danger-subtle text-danger">
+                                                    <i
+                                                        class="ti ti-alert-circle me-1"></i>{{ $asset->total_damaged_quantity }}
+                                                    rusak
+                                                </span>
+                                            @endif
+                                        </div>
+                                        @if ($asset->total_damaged_quantity > 0)
+                                            <small class="text-muted">Total: {{ $asset->original_quantity }}</small>
+                                        @endif
                                     </td>
                                     <td>
                                         <p class="fs-3 text-dark mb-0">

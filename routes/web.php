@@ -53,6 +53,13 @@ Route::prefix('/dashboard')->middleware(['auth', 'role:admin,operator'])->group(
     Route::resource('categories', CategoryController::class);
     Route::resource('locations', LocationController::class);
     Route::resource('assets', AssetController::class);
+
+    // Asset damaged routes
+    Route::get('/assets/{asset}/mark-damaged', [AssetController::class, 'markDamaged'])->name('assets.mark-damaged');
+    Route::post('/assets/{asset}/store-damaged', [AssetController::class, 'storeDamaged'])->name('assets.store-damaged');
+    Route::post('/assets/{damagedAsset}/restore-damaged', [AssetController::class, 'restoreDamaged'])->name('assets.restore-damaged');
+    Route::delete('/assets/{damagedAsset}/destroy-damaged', [AssetController::class, 'destroyDamaged'])->name('assets.destroy-damaged');
+
     Route::get('/asset-borrowings/location/{location}/assets', [AssetBorrowingController::class, 'getAssetsByLocation'])->name('asset-borrowings.assets-by-location');
     Route::resource('asset-borrowings', AssetBorrowingController::class);
     Route::resource('operator', OperatorController::class);
