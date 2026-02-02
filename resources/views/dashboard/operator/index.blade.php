@@ -50,8 +50,18 @@
                                     </td>
                                     <td>
                                         <span
-                                            class="text-capitalize badge {{ $item->role == 'operator' ? 'bg-info-subtle text-info' : 'bg-primary-subtle text-primary' }} rounded-3 fw-semibold fs-2">
-                                            {{ $item->role == 'kepala_sekolah' ? 'Kepala Sekolah' : $item->role }}
+                                            class="text-capitalize badge {{ $item->role == 'operator-asset'
+                                                ? 'bg-info-subtle text-info'
+                                                : ($item->role == 'operator-letter'
+                                                    ? 'bg-warning-subtle text-warning'
+                                                    : 'bg-primary-subtle text-primary') }} rounded-3 fw-semibold fs-2">
+                                            {{ $item->role == 'kepala_sekolah'
+                                                ? 'Kepala Sekolah'
+                                                : ($item->role == 'operator-asset'
+                                                    ? 'Operator Asset'
+                                                    : ($item->role == 'operator-letter'
+                                                        ? 'Operator Surat'
+                                                        : $item->role)) }}
                                         </span>
                                     </td>
                                     <td>

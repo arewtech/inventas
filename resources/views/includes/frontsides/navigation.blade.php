@@ -45,7 +45,7 @@
                         </a>
 
                         <ul class="dropdown-menu dropdown-menu-lg-end">
-                            @if (Auth::user()->role == 'admin' || Auth::user()->role == 'operator')
+                            @if (Auth::user()->isAdmin() || Auth::user()->isOperator())
                                 <li>
                                     <a class="dropdown-item" href="{{ route('dashboard') }}">Dashboard</a>
                                 </li>

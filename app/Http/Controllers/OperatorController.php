@@ -15,7 +15,10 @@ class OperatorController extends Controller
     public function index()
     {
         return view('dashboard.operator.index',[
-            'operators' => User::where('id', '!=', auth()->id())->where('role', '!=', 'admin')->latest()->get(),
+            'operators' => User::where('id', '!=', auth()->id())
+                ->whereIn('role', ['operator-asset', 'operator-letter', 'kepala_sekolah'])
+                ->latest()
+                ->get(),
         ]);
     }
 
@@ -24,7 +27,7 @@ class OperatorController extends Controller
      */
     public function create()
     {
-        if (auth()->user()->role == 'operator') {
+        if (auth()->user()->isOperator()) {
             return abort(404);
         }
         return view('dashboard.operator.create');
@@ -41,11 +44,10 @@ class OperatorController extends Controller
             'email' => ['required', 'email', 'unique:users'],
             'password' => ['required', 'string', 'min:8'],
             'phone' => ['required', 'string', 'min:10', 'max:13'],
-            'role' => ['string', 'in:operator'],
+            'role' => ['required', 'string', 'in:operator-asset,operator-letter'],
         ]);
 
         $data['password'] = bcrypt($data['password']);
-        $data['role'] = 'operator';
         User::create($data);
 
         return redirect()->route('operator.index')->with('success', 'Operator berhasil ditambahkan');
@@ -64,7 +66,7 @@ class OperatorController extends Controller
      */
     public function edit(User $operator)
     {
-        if (auth()->user()->role == 'operator') {
+        if (auth()->user()->isOperator()) {
             return abort(404);
         }
         // return $operator;
@@ -82,6 +84,7 @@ class OperatorController extends Controller
             'email' => ['required', 'email'],
             'password' => ['nullable', 'string', 'min:8'],
             'phone' => ['required', 'string', 'min:10', 'max:13'],
+            'role' => ['required', 'string', 'in:operator-asset,operator-letter,kepala_sekolah'],
             'status' => ['nullable'],
         ]);
 
@@ -103,7 +106,7 @@ class OperatorController extends Controller
      */
     public function destroy(User $operator)
     {
-        if (auth()->user()->role == 'operator') {
+        if (auth()->user()->isOperator()) {
             return abort(404);
         }
         // delete image avatar

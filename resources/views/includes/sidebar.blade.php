@@ -37,73 +37,79 @@
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                     <span class="hide-menu">Menu</span>
                 </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link {{ Route::is('categories*') ? 'active' : '' }}"
-                        href="{{ route('categories.index') }}" aria-expanded="false">
-                        <span>
-                            <i class="ti ti-category"></i>
-                        </span>
-                        <span class="hide-menu">Kategori</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link {{ Route::is('locations*') ? 'active' : '' }}"
-                        href="{{ route('locations.index') }}" aria-expanded="false">
-                        <span>
-                            <i class="ti ti-map"></i>
-                        </span>
-                        <span class="hide-menu">Lokasi</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link {{ Route::is('assets*') ? 'active' : '' }}"
-                        href="{{ route('assets.index') }}" aria-expanded="false">
-                        <span>
-                            <i class="ti ti-box"></i>
-                        </span>
-                        <span class="hide-menu">Aset</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link {{ Route::is('asset-borrowings*') ? 'active' : '' }}"
-                        href="{{ route('asset-borrowings.index') }}" aria-expanded="false">
-                        <span>
-                            <i class="ti ti-clipboard"></i>
-                        </span>
-                        <span class="hide-menu">Peminjaman</span>
-                    </a>
-                </li>
-                <li class="nav-small-cap">
-                    <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                    <span class="hide-menu">Letters</span>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link {{ Route::is('transfer-ins*') ? 'active' : '' }}"
-                        href="{{ route('transfer-ins.index') }}" aria-expanded="false">
-                        <span>
-                            <i class="ti ti-mail"></i>
-                        </span>
-                        <span class="hide-menu">Surat Mutasi Terima</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link {{ Route::is('transfer-outs*') ? 'active' : '' }}"
-                        href="{{ route('transfer-outs.index') }}" aria-expanded="false">
-                        <span>
-                            <i class="ti ti-mail-forward"></i>
-                        </span>
-                        <span class="hide-menu">Surat Mutasi Keluar</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link {{ Route::is('active-teachings*') ? 'active' : '' }}"
-                        href="{{ route('active-teachings.index') }}" aria-expanded="false">
-                        <span>
-                            <i class="ti ti-certificate"></i>
-                        </span>
-                        <span class="hide-menu">Surat Aktif Mengajar</span>
-                    </a>
-                </li>
+
+                @if (auth()->user()->canAccessAssets())
+                    <li class="sidebar-item">
+                        <a class="sidebar-link {{ Route::is('categories*') ? 'active' : '' }}"
+                            href="{{ route('categories.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-category"></i>
+                            </span>
+                            <span class="hide-menu">Kategori</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link {{ Route::is('locations*') ? 'active' : '' }}"
+                            href="{{ route('locations.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-map"></i>
+                            </span>
+                            <span class="hide-menu">Lokasi</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link {{ Route::is('assets*') ? 'active' : '' }}"
+                            href="{{ route('assets.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-box"></i>
+                            </span>
+                            <span class="hide-menu">Aset</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link {{ Route::is('asset-borrowings*') ? 'active' : '' }}"
+                            href="{{ route('asset-borrowings.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-clipboard"></i>
+                            </span>
+                            <span class="hide-menu">Peminjaman</span>
+                        </a>
+                    </li>
+                @endif
+
+                @if (auth()->user()->canAccessLetters())
+                    <li class="nav-small-cap">
+                        <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                        <span class="hide-menu">Letters</span>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link {{ Route::is('transfer-ins*') ? 'active' : '' }}"
+                            href="{{ route('transfer-ins.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-mail"></i>
+                            </span>
+                            <span class="hide-menu">Surat Mutasi Terima</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link {{ Route::is('transfer-outs*') ? 'active' : '' }}"
+                            href="{{ route('transfer-outs.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-mail-forward"></i>
+                            </span>
+                            <span class="hide-menu">Surat Mutasi Keluar</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link {{ Route::is('active-teachings*') ? 'active' : '' }}"
+                            href="{{ route('active-teachings.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-certificate"></i>
+                            </span>
+                            <span class="hide-menu">Surat Aktif Mengajar</span>
+                        </a>
+                    </li>
+                @endif
                 <li class="nav-small-cap">
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                     <span class="hide-menu">Lainnya</span>

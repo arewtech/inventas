@@ -50,41 +50,49 @@ Route::middleware('auth')->group(function () {
 // Route::redirect('/', '/dashboard');
 Route::prefix('/dashboard')->middleware(['auth', 'role:admin,operator'])->group(function () {
     Route::get('/', DashboardController::class)->name('dashboard');
-    Route::resource('categories', CategoryController::class);
-    Route::resource('locations', LocationController::class);
-    Route::resource('assets', AssetController::class);
 
-    // Asset damaged routes
-    Route::get('/assets/{asset}/mark-damaged', [AssetController::class, 'markDamaged'])->name('assets.mark-damaged');
-    Route::post('/assets/{asset}/store-damaged', [AssetController::class, 'storeDamaged'])->name('assets.store-damaged');
-    Route::post('/assets/{damagedAsset}/restore-damaged', [AssetController::class, 'restoreDamaged'])->name('assets.restore-damaged');
-    Route::delete('/assets/{damagedAsset}/destroy-damaged', [AssetController::class, 'destroyDamaged'])->name('assets.destroy-damaged');
+    // Asset Management Routes (Admin & Operator-Asset only)
+    Route::middleware('role:admin,operator-asset')->group(function () {
+        Route::resource('categories', CategoryController::class);
+        Route::resource('locations', LocationController::class);
+        Route::resource('assets', AssetController::class);
 
-    Route::get('/asset-borrowings/location/{location}/assets', [AssetBorrowingController::class, 'getAssetsByLocation'])->name('asset-borrowings.assets-by-location');
-    Route::resource('asset-borrowings', AssetBorrowingController::class);
+        // Asset damaged routes
+        Route::get('/assets/{asset}/mark-damaged', [AssetController::class, 'markDamaged'])->name('assets.mark-damaged');
+        Route::post('/assets/{asset}/store-damaged', [AssetController::class, 'storeDamaged'])->name('assets.store-damaged');
+        Route::post('/assets/{damagedAsset}/restore-damaged', [AssetController::class, 'restoreDamaged'])->name('assets.restore-damaged');
+        Route::delete('/assets/{damagedAsset}/destroy-damaged', [AssetController::class, 'destroyDamaged'])->name('assets.destroy-damaged');
+
+        Route::get('/asset-borrowings/location/{location}/assets', [AssetBorrowingController::class, 'getAssetsByLocation'])->name('asset-borrowings.assets-by-location');
+        Route::resource('asset-borrowings', AssetBorrowingController::class);
+        Route::put('asset-borrowings/{assetBorrowing}/return', [AssetBorrowingController::class, 'return'])->name('asset-borrowings.return');
+        Route::get('/assets/{asset}/print-qr', [AssetController::class, 'printQr'])->name('assets.print-qr');
+        Route::get('/reports/assets', [ReportController::class, 'assetsReport'])->name('reports.assets');
+        Route::get('/reports/asset-borrowings', [ReportController::class, 'assetBorrowingsReport'])->name('reports.asset-borrowings');
+    });
+
+    // Letter Management Routes (Admin & Operator-Letter only)
+    Route::middleware('role:admin,operator-letter')->group(function () {
+        // print routes
+        Route::get('/transfer-ins/{transfer_in}/print', [PrintLetterController::class, 'transferInPrint'])->name('transfer-ins.print');
+        Route::get('/transfer-outs/{transfer_out}/print', [PrintLetterController::class, 'transferOutPrint'])->name('transfer-outs.print');
+        Route::get('/active-teachings/{active_teaching}/print', [PrintLetterController::class, 'activeTeachingPrint'])->name('active-teachings.print');
+        // update nomer surat
+        Route::put('/transfer-ins/{transfer_in}/update-number', [TransferInController::class, 'updateNumber'])->name('transfer-ins.update-number');
+        Route::put('/transfer-outs/{transfer_out}/update-number', [TransferOutController::class, 'updateNumber'])->name('transfer-outs.update-number');
+        Route::put('/active-teachings/{active_teaching}/update-number', [ActiveTeachingController::class, 'updateNumber'])->name('active-teachings.update-number');
+        // resources
+        Route::resource('transfer-ins', TransferInController::class);
+        Route::resource('transfer-outs', TransferOutController::class);
+        Route::resource('active-teachings', ActiveTeachingController::class);
+    });
+
+    // Shared Routes (All roles)
     Route::resource('operator', OperatorController::class);
-    Route::put('asset-borrowings/{assetBorrowing}/return', [AssetBorrowingController::class, 'return'])->name('asset-borrowings.return');
-    Route::get('/assets/{asset}/print-qr', [AssetController::class, 'printQr'])->name('assets.print-qr');
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-    Route::get('/reports/assets', [ReportController::class, 'assetsReport'])->name('reports.assets');
-    Route::get('/reports/asset-borrowings', [ReportController::class, 'assetBorrowingsReport'])->name('reports.asset-borrowings');
     Route::get('/app-settings', [SettingController::class, 'index'])->name('settings.index');
     Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
     Route::post('/app-settings', [SettingController::class, 'store'])->name('settings.store');
-
-    // letters routes
-    // print routes
-    Route::get('/transfer-ins/{transfer_in}/print', [PrintLetterController::class, 'transferInPrint'])->name('transfer-ins.print');
-    Route::get('/transfer-outs/{transfer_out}/print', [PrintLetterController::class, 'transferOutPrint'])->name('transfer-outs.print');
-    Route::get('/active-teachings/{active_teaching}/print', [PrintLetterController::class, 'activeTeachingPrint'])->name('active-teachings.print');
-    // update nomer surat
-    Route::put('/transfer-ins/{transfer_in}/update-number', [TransferInController::class, 'updateNumber'])->name('transfer-ins.update-number');
-    Route::put('/transfer-outs/{transfer_out}/update-number', [TransferOutController::class, 'updateNumber'])->name('transfer-outs.update-number');
-    Route::put('/active-teachings/{active_teaching}/update-number', [ActiveTeachingController::class, 'updateNumber'])->name('active-teachings.update-number');
-    // resources
-    Route::resource('transfer-ins', TransferInController::class);
-    Route::resource('transfer-outs', TransferOutController::class);
-    Route::resource('active-teachings', ActiveTeachingController::class);
 });
 
 // route public tanpa auth
