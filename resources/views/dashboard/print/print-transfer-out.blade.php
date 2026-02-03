@@ -241,19 +241,43 @@
         <div class="footer">
             <div style="width: max-content; margin-left: auto; text-align: center;">
                 <p style="margin: 0; text-transform: capitalize;">{{ setting('app_village') ?? '-' }},
-                    {{ formatDate(now()) }}</p>
-                <p style="margin: 0 0 10px 0;">{{ setting('app_occupation') ?? '-' }}</p>
+                    {{ $transfer_out->signed_at ? formatDate($transfer_out->signed_at) : formatDate(now()) }}</p>
+                <p style="margin: 0 0 10px 0;">{{ $transfer_out->signer_position ?? (setting('app_occupation') ?? '-') }}
+                </p>
                 <p style="margin: 0 0 10px 0;">{{ setting('app_school_name') ?? '-' }}</p>
-                <img src="{{ setting('app_ttd') !== null ? asset('storage/' . setting('app_ttd')) : asset('assets/images/fake-ttd.png') }}"
-                    alt="TTD" style="width: 85px;">
+
+                {{-- QR Code for Electronic Signature --}}
+                @if ($transfer_out->signature_qr)
+                    <div id="qrcode-signature" style="display: inline-block; margin: 10px 0;"></div>
+                @else
+                    <div style="height: 85px; margin: 10px 0;"></div>
+                @endif
+
                 <p style="text-decoration: underline; margin: 0; text-transform: uppercase;">
-                    <strong>{{ setting('app_lead') ?? '-' }}</strong>
+                    <strong>{{ $transfer_out->signer_name ?? (setting('app_lead') ?? '-') }}</strong>
                 </p>
             </div>
         </div>
     </main>
+
+    <script src="{{ asset('assets/js/qrcode.min.js') }}"></script>
     <script>
-        window.print();
+        @if ($transfer_out->signature_qr)
+            // Generate QR code for electronic signature
+            new QRCode(document.getElementById('qrcode-signature'), {
+                text: "{{ $transfer_out->signature_qr }}",
+                width: 85,
+                height: 85,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.M
+            });
+        @endif
+
+        // Auto print after QR code generated
+        setTimeout(function() {
+            window.print();
+        }, 500);
     </script>
 </body>
 

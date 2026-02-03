@@ -97,3 +97,4 @@ Route::prefix('/dashboard')->middleware(['auth', 'role:admin,operator'])->group(
 
 // route public tanpa auth
 Route::get('/asset/{asset}/view', [FrontsideController::class, 'publicView'])->name('assets.public.view');
+Route::get('/signature/verify/{id}/{type}', [FrontsideController::class, 'verifySignature'])->name('signature.verify');
