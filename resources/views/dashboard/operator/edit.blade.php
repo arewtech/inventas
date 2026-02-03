@@ -75,6 +75,30 @@
                             @enderror
                         </div>
                         <div class="col-md-4 mb-3">
+                            <label for="role" class="form-label">Role <span class="text-danger">*</span></label>
+                            <select id="role" class="form-select" name="role" required>
+                                <option value="">Pilih Role</option>
+                                <option value="operator-asset"
+                                    {{ old('role', $operator->role) == 'operator-asset' ? 'selected' : '' }}>
+                                    Operator Asset
+                                </option>
+                                <option value="operator-letter"
+                                    {{ old('role', $operator->role) == 'operator-letter' ? 'selected' : '' }}>
+                                    Operator Surat
+                                </option>
+                                <option value="kepala_sekolah"
+                                    {{ old('role', $operator->role) == 'kepala_sekolah' ? 'selected' : '' }}>
+                                    Kepala Sekolah
+                                </option>
+                            </select>
+                            @error('role')
+                                <div class="text-danger mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
                             <label for="password" class="form-label">Password</label>
                             <input id="password" type="password" placeholder="**********" class="form-control"
                                 name="password">

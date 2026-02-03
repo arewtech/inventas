@@ -58,9 +58,34 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    public function isOperatorAsset()
+    {
+        return $this->role === 'operator-asset';
+    }
+
+    public function isOperatorLetter()
+    {
+        return $this->role === 'operator-letter';
+    }
+
+    public function isOperator()
+    {
+        return $this->isOperatorAsset() || $this->isOperatorLetter();
+    }
+
     public function isNotPrincipal()
     {
         return $this->role !== 'kepala_sekolah';
+    }
+
+    public function canAccessAssets()
+    {
+        return $this->isAdmin() || $this->isOperatorAsset();
+    }
+
+    public function canAccessLetters()
+    {
+        return $this->isAdmin() || $this->isOperatorLetter();
     }
 
     public function getAvatarUrlAttribute()

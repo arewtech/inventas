@@ -10,6 +10,10 @@ class ActiveTeaching extends Model
     use HasFactory;
     protected $guarded = [];
 
+    protected $casts = [
+        'signed_at' => 'datetime',
+    ];
+
     public function getStatusColorAttribute()
     {
         if ($this->status === 'pending') {
@@ -27,5 +31,29 @@ class ActiveTeaching extends Model
     public function responseBy()
     {
         return $this->belongsTo(User::class, 'response_by');
+    }
+
+    /**
+     * Generate electronic signature QR code URL
+     *
+     * @param string $signerName
+     * @param string $signerPosition
+     * @return string
+     */
+    public function generateSignatureQR($signerName, $signerPosition)
+    {
+        $baseUrl = env('APP_URL', 'http://localhost');
+        $baseIpUrl = 'http://192.168.1.4:8080';
+        $signatureUrl = $baseIpUrl . '/signature/verify/' . $this->id . '/active-teaching';
+
+        // Update signer information
+        $this->update([
+            'signer_name' => $signerName,
+            'signer_position' => $signerPosition,
+            'signed_at' => now(),
+            'signature_qr' => $signatureUrl,
+        ]);
+
+        return $signatureUrl;
     }
 }

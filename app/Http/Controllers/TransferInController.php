@@ -88,17 +88,27 @@ class TransferInController extends Controller
     {
         try {
             $request->validate([
-                'number' => 'required|string|unique:transfer_ins,number,' . $transfer_in->id
+                'number' => 'required|string|unique:transfer_ins,number,' . $transfer_in->id,
+                'signer_name' => 'required|string|max:255',
+                'signer_position' => 'required|string|max:255',
             ], [
                 'number.required' => 'Nomor surat harus diisi',
-                'number.unique' => 'Nomor surat sudah digunakan'
+                'number.unique' => 'Nomor surat sudah digunakan',
+                'signer_name.required' => 'Nama penandatangan harus diisi',
+                'signer_position.required' => 'Jabatan penandatangan harus diisi',
             ]);
 
             $transfer_in->update([
                 'number' => $request->number
             ]);
 
-            return back()->with('success', 'Nomor surat berhasil di update');
+            // Generate electronic signature QR code
+            $transfer_in->generateSignatureQR(
+                $request->signer_name,
+                $request->signer_position
+            );
+
+            return back()->with('success', 'Nomor surat berhasil diupdate dan tanda tangan elektronik telah dibuat');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return back()
                 ->withErrors($e->validator)

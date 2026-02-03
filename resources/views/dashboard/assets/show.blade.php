@@ -59,7 +59,21 @@
                                 </tr>
                                 <tr>
                                     <th class="bg-light">Jumlah</th>
-                                    <td>{{ $asset->quantity }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="badge bg-success-subtle text-success">{{ $asset->quantity }}
+                                                Tersedia</span>
+                                            @if ($asset->total_damaged_quantity > 0)
+                                                <span class="badge bg-danger-subtle text-danger">
+                                                    {{ $asset->total_damaged_quantity }} Rusak
+                                                </span>
+                                            @endif
+                                        </div>
+                                        @if ($asset->total_damaged_quantity > 0)
+                                            <small class="text-muted">Total Original:
+                                                {{ $asset->original_quantity }}</small>
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th class="bg-light">Kondisi</th>
@@ -122,6 +136,114 @@
                     </div>
                 </div>
 
+                <!-- Damaged Assets Section -->
+                @if ($asset->isParentAsset() && $asset->damagedAssets->count() > 0)
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card border-danger">
+                                <div class="card-header bg-danger-subtle">
+                                    <h5 class="card-title mb-0 text-danger">
+                                        <i class="ti ti-alert-circle me-2"></i>Aset Rusak
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered align-middle">
+                                            <thead class="bg-light">
+                                                <tr>
+                                                    <th width="50">No</th>
+                                                    <th>Nomor Aset</th>
+                                                    <th>Jumlah Rusak</th>
+                                                    <th>Deskripsi Kerusakan</th>
+                                                    <th>Tanggal Rusak</th>
+                                                    <th width="200">Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($asset->damagedAssets as $damaged)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>
+                                                            <code>{{ $damaged->asset_number }}</code>
+                                                        </td>
+                                                        <td>
+                                                            <span
+                                                                class="badge bg-danger-subtle text-danger">{{ $damaged->quantity }}</span>
+                                                        </td>
+                                                        <td>{{ $damaged->description ?? '-' }}</td>
+                                                        <td>{{ $damaged->created_at->format('d/m/Y H:i') }}</td>
+                                                        <td>
+                                                            <div class="d-flex gap-1">
+                                                                <form
+                                                                    action="{{ route('assets.restore-damaged', $damaged->asset_number) }}"
+                                                                    method="POST"
+                                                                    onsubmit="return confirm('Yakin ingin memulihkan aset ini ke kondisi baik?')">
+                                                                    @csrf
+                                                                    <button type="submit" class="btn btn-sm btn-success"
+                                                                        title="Pulihkan ke Baik">
+                                                                        <i class="ti ti-refresh"></i>
+                                                                    </button>
+                                                                </form>
+                                                                <form
+                                                                    action="{{ route('assets.destroy-damaged', $damaged->asset_number) }}"
+                                                                    method="POST"
+                                                                    onsubmit="return confirm('Yakin ingin menghapus aset rusak ini?')">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn btn-sm btn-danger"
+                                                                        title="Hapus Permanen">
+                                                                        <i class="ti ti-trash"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                            <tfoot class="bg-light">
+                                                <tr>
+                                                    <td colspan="2" class="text-end"><strong>Total Rusak:</strong></td>
+                                                    <td colspan="4">
+                                                        <span
+                                                            class="badge bg-danger fs-4">{{ $asset->total_damaged_quantity }}</span>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Action Buttons -->
+                @if ($asset->isParentAsset() && auth()->user()->isNotPrincipal())
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-end gap-2">
+                                @if ($asset->quantity > 0)
+                                    <a href="{{ route('assets.mark-damaged', $asset->asset_number) }}"
+                                        class="btn btn-warning">
+                                        <i class="ti ti-alert-triangle me-1"></i> Tandai Rusak
+                                    </a>
+                                @endif
+                                <a href="{{ route('assets.edit', $asset->asset_number) }}" class="btn btn-primary">
+                                    <i class="ti ti-edit me-1"></i> Edit Aset
+                                </a>
+                                <form action="{{ route('assets.destroy', $asset->asset_number) }}" method="POST"
+                                    onsubmit="return confirm('Yakin ingin menghapus aset ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="ti ti-trash me-1"></i> Hapus Aset
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
                 <!-- QR Testing Section -->
                 <div class="row mt-4">
                     <div class="col-12">
@@ -155,7 +277,8 @@
                                             <button type="button" class="btn btn-primary" id="testQrBtn">
                                                 <i class="ti ti-brand-telegram me-1"></i> Test QR
                                             </button>
-                                            <a href="{{ $asset->qr_code }}" target="_blank" class="btn btn-outline-dark">
+                                            <a href="{{ $asset->qr_code }}" target="_blank"
+                                                class="btn btn-outline-dark">
                                                 <i class="ti ti-external-link me-1"></i> Buka di Tab Baru
                                             </a>
                                         </div>

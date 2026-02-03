@@ -338,7 +338,7 @@
                                                         @method('put')
                                                         <div class="modal-body">
                                                             <h6 class="line-clamp">Detail {{ $item->letter }}</h6>
-                                                            <div>
+                                                            <div class="mb-3">
                                                                 <label for="number" class="form-label">Nomor
                                                                     Surat</label>
                                                                 <input type="text" id="number"
@@ -351,6 +351,43 @@
                                                                     text-danger">*contoh
                                                                     : <b>470 / 34 / 409.12 / 2024</b></small>
                                                                 @error('number')
+                                                                    <div class="invalid-feedback">
+                                                                        {{ $message }}
+                                                                    </div>
+                                                                @enderror
+                                                            </div>
+
+                                                            <hr class="my-3">
+                                                            <h6 class="mb-3">Informasi Penandatangan</h6>
+
+                                                            <div class="mb-3">
+                                                                <label for="signer_name" class="form-label">Nama
+                                                                    Penandatangan</label>
+                                                                <input type="text" id="signer_name"
+                                                                    class="form-control @error('signer_name') is-invalid @enderror"
+                                                                    name="signer_name"
+                                                                    value="{{ old('signer_name', $item->signer_name) }}"
+                                                                    placeholder="Nama lengkap penandatangan" required>
+                                                                <small class="text-muted">Nama orang yang menandatangani
+                                                                    surat ini</small>
+                                                                @error('signer_name')
+                                                                    <div class="invalid-feedback">
+                                                                        {{ $message }}
+                                                                    </div>
+                                                                @enderror
+                                                            </div>
+
+                                                            <div class="mb-3">
+                                                                <label for="signer_position" class="form-label">Jabatan
+                                                                    Penandatangan</label>
+                                                                <input type="text" id="signer_position"
+                                                                    class="form-control @error('signer_position') is-invalid @enderror"
+                                                                    name="signer_position"
+                                                                    value="{{ old('signer_position', $item->signer_position) }}"
+                                                                    placeholder="Contoh: Kepala Sekolah" required>
+                                                                <small class="text-muted">Jabatan penandatangan
+                                                                    surat</small>
+                                                                @error('signer_position')
                                                                     <div class="invalid-feedback">
                                                                         {{ $message }}
                                                                     </div>
@@ -384,7 +421,7 @@
         </div>
     </div>
 
-    @if ($errors->has('number'))
+    @if ($errors->has('number') || $errors->has('signer_name') || $errors->has('signer_position'))
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 @if (session('modal_error_id'))

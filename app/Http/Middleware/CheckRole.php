@@ -21,7 +21,18 @@ class CheckRole
 
         $userRole = auth()->user()->role;
 
-        if (!in_array($userRole, $roles)) {
+        // Map generic 'operator' to both operator types for backward compatibility
+        $expandedRoles = [];
+        foreach ($roles as $role) {
+            if ($role === 'operator') {
+                $expandedRoles[] = 'operator-asset';
+                $expandedRoles[] = 'operator-letter';
+            } else {
+                $expandedRoles[] = $role;
+            }
+        }
+
+        if (!in_array($userRole, $expandedRoles)) {
             abort(404);
         }
 

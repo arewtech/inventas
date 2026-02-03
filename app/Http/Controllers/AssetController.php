@@ -16,7 +16,8 @@ class AssetController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Asset::with(['category', 'location']);
+        $query = Asset::with(['category', 'location'])
+            ->whereNull('parent_asset_id'); // Only show parent assets
 
         // Filter by search query
         if($request->has('q') && $request->q != '') {
@@ -206,5 +207,127 @@ class AssetController extends Controller
     public function printQr(Asset $asset)
     {
         return view('dashboard.assets.print-qr', compact('asset'));
+    }
+
+    /**
+     * Show form to mark asset as damaged
+     */
+    public function markDamaged(Asset $asset)
+    {
+        // Only allow marking parent assets as damaged
+        if ($asset->isDamagedChild()) {
+            return redirect()->route('assets.index')
+                ->with('error', 'Tidak bisa menandai aset rusak sebagai rusak lagi');
+        }
+
+        // Check if there's available quantity
+        if ($asset->quantity <= 0) {
+            return redirect()->route('assets.show', $asset->asset_number)
+                ->with('error', 'Tidak ada quantity tersedia untuk ditandai rusak');
+        }
+
+        return view('dashboard.assets.mark-damaged', compact('asset'));
+    }
+
+    /**
+     * Store damaged asset record
+     */
+    public function storeDamaged(Request $request, Asset $asset)
+    {
+        // Validate
+        $request->validate([
+            'quantity' => 'required|integer|min:1|max:' . $asset->quantity,
+            'description' => 'required|string',
+            'additional_info' => 'nullable|string',
+        ]);
+
+        // Only allow marking parent assets as damaged
+        if ($asset->isDamagedChild()) {
+            return redirect()->route('assets.index')
+                ->with('error', 'Tidak bisa menandai aset rusak sebagai rusak lagi');
+        }
+
+        // Check if there's enough quantity
+        if ($request->quantity > $asset->quantity) {
+            return redirect()->back()
+                ->with('error', 'Quantity yang rusak melebihi quantity tersedia')
+                ->withInput();
+        }
+
+        // Create damaged asset record
+        $damagedAsset = Asset::create([
+            'name' => $asset->name . ' (Rusak)',
+            'asset_number' => Asset::generateAssetNumber(),
+            'description' => $request->description,
+            'category_id' => $asset->category_id,
+            'location_id' => $asset->location_id,
+            'quantity' => $request->quantity,
+            'condition' => 'rusak',
+            'parent_asset_id' => $asset->id,
+            'additional_info' => $request->additional_info,
+            'image' => $asset->image, // Use same image as parent
+        ]);
+
+        // Generate QR code for damaged asset
+        $baseUrl = env('APP_URL', 'http://localhost');
+        $assetUrl = $baseUrl . '/asset/' . $damagedAsset->asset_number . '/view';
+        $damagedAsset->qr_code = $assetUrl;
+        $damagedAsset->save();
+
+        // Decrease parent asset quantity
+        $asset->decrement('quantity', $request->quantity);
+
+        return redirect()->route('assets.show', $asset->asset_number)
+            ->with('success', "Berhasil menandai {$request->quantity} aset sebagai rusak");
+    }
+
+    /**
+     * Restore damaged asset (return to parent)
+     */
+    public function restoreDamaged(Asset $damagedAsset)
+    {
+        // Only allow restoring damaged child assets
+        if (!$damagedAsset->isDamagedChild()) {
+            return redirect()->route('assets.index')
+                ->with('error', 'Hanya aset rusak yang bisa dipulihkan');
+        }
+
+        $parentAsset = $damagedAsset->parentAsset;
+        $quantity = $damagedAsset->quantity;
+
+        // Return quantity to parent asset
+        $parentAsset->increment('quantity', $quantity);
+
+        // Delete damaged asset record
+        $damagedAsset->delete();
+
+        return redirect()->route('assets.show', $parentAsset->asset_number)
+            ->with('success', "Berhasil memulihkan {$quantity} aset ke kondisi baik");
+    }
+
+    /**
+     * Delete damaged asset permanently
+     */
+    public function destroyDamaged(Asset $damagedAsset)
+    {
+        // Only allow deleting damaged child assets
+        if (!$damagedAsset->isDamagedChild()) {
+            return redirect()->route('assets.index')
+                ->with('error', 'Hanya aset rusak yang bisa dihapus melalui fungsi ini');
+        }
+
+        $parentAsset = $damagedAsset->parentAsset;
+        $quantity = $damagedAsset->quantity;
+
+        // Delete image if exists
+        if ($damagedAsset->image && $damagedAsset->image !== $parentAsset->image) {
+            Storage::disk('public')->delete($damagedAsset->image);
+        }
+
+        // Delete damaged asset record
+        $damagedAsset->delete();
+
+        return redirect()->route('assets.show', $parentAsset->asset_number)
+            ->with('success', "Berhasil menghapus {$quantity} aset rusak");
     }
 }
