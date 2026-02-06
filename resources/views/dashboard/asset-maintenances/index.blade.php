@@ -1,14 +1,17 @@
-@extends('layouts.app', ['title' => 'Daftar Aset'])
+@extends('layouts.app', ['title' => 'Pemeliharaan Aset'])
 @section('content')
     <div class="container-fluid">
         <div class="d-sm-flex d-block align-items-center justify-content-between mb-7">
             <div class="mb-3 mb-sm-0">
-                <h5 class="card-title fw-semibold">Daftar Aset</h5>
-                <p class="card-subtitle mb-0">List semua aset yang tersedia</p>
+                <h5 class="card-title fw-semibold">Pemeliharaan Aset</h5>
+                <p class="card-subtitle mb-0">Daftar detail individual aset untuk pemeliharaan</p>
             </div>
             <div class="d-flex align-items-center gap-2">
                 <div>
-                    <form action="{{ route('assets.index') }}" method="get">
+                    <form action="{{ route('asset-maintenances.index') }}" method="get">
+                        @if (request('name'))
+                            <input type="hidden" name="name" value="{{ request('name') }}">
+                        @endif
                         <div class="input-group">
                             <select name="category" class="form-select" style="max-width: 170px;">
                                 <option value="">Semua Kategori</option>
@@ -29,18 +32,25 @@
                                 @endforeach
                             </select>
                             <input type="text" name="q" value="{{ request()->q }}" autofocus class="form-control"
-                                placeholder="Cari" aria-label="Cari" aria-describedby="button-addon2">
+                                placeholder="Cari nama/nomor aset" aria-label="Cari" aria-describedby="button-addon2">
                             <button class="btn btn-outline-primary" type="submit" id="button-addon2">
                                 <i class="ti ti-search"></i>
                             </button>
                         </div>
                     </form>
                 </div>
-                @if (auth()->user()->isNotPrincipal())
-                    <a href="{{ route('assets.create') }}" class="btn btn-primary">Tambah</a>
-                @endif
+                <a href="{{ route('assets.index') }}" class="btn btn-secondary">
+                    <i class="ti ti-arrow-left"></i> Kembali
+                </a>
             </div>
         </div>
+
+        @if (request('name'))
+            <div class="alert alert-info">
+                <i class="ti ti-info-circle me-2"></i>
+                Menampilkan detail aset: <strong>{{ request('name') }}</strong>
+            </div>
+        @endif
 
         <div class="card w-100">
             <div class="card-body">
@@ -50,10 +60,11 @@
                             <tr class="text-muted fw-semibold">
                                 <th scope="col">No</th>
                                 <th scope="col">Gambar</th>
+                                <th scope="col">Nomor Aset</th>
                                 <th scope="col">Nama</th>
                                 <th scope="col">Kategori</th>
                                 <th scope="col">Lokasi</th>
-                                <th scope="col">Total Aset</th>
+                                <th scope="col">Kondisi</th>
                                 <th scope="col">Dibuat</th>
                                 <th></th>
                             </tr>
@@ -78,6 +89,10 @@
                                         @endif
                                     </td>
                                     <td>
+                                        <span
+                                            class="text-uppercase fw-semibold text-primary">{{ $asset->asset_number }}</span>
+                                    </td>
+                                    <td>
                                         <span class="text-capitalize">{{ $asset->name }}</span>
                                     </td>
                                     <td>
@@ -89,36 +104,56 @@
                                         <span class="text-capitalize">{{ $asset->location->name }}</span>
                                     </td>
                                     <td>
-                                        <div class="d-flex gap-1">
-                                            @if ($asset->total_baik > 0)
-                                                <span class="badge bg-success-subtle text-success">
-                                                    <i class="ti ti-check-circle me-1"></i>{{ $asset->total_baik }} Baik
-                                                </span>
-                                            @endif
-                                            @if ($asset->total_rusak > 0)
-                                                <span class="badge bg-danger-subtle text-danger">
-                                                    <i class="ti ti-alert-circle me-1"></i>{{ $asset->total_rusak }} Rusak
-                                                </span>
-                                            @endif
-                                        </div>
-                                        <small class="text-muted">Total: <strong>{{ $asset->total_assets }}</strong>
-                                            Unit</small>
+                                        <span class="badge {{ $asset->status_color }} rounded-3 fw-semibold fs-2">
+                                            {{ ucfirst($asset->condition) }}
+                                        </span>
                                     </td>
                                     <td>
                                         <p class="fs-3 text-dark mb-0">
-                                            {{ \Carbon\Carbon::parse($asset->created_at)->format('d/m/Y') }}
+                                            {{ $asset->created_at->format('d/m/Y') }}
                                         </p>
                                     </td>
                                     <td>
-                                        <a href="{{ route('assets.show', ['name' => $asset->name, 'category' => $asset->category_id, 'location' => $asset->location_id]) }}"
-                                            class="btn btn-sm btn-primary d-flex justify-content-center align-items-center gap-1">
-                                            <i class="ti ti-eye"></i> Detail
-                                        </a>
+                                        <div class="dropdown dropstart">
+                                            <a href="#" class="text-muted" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="ti ti-dots fs-5"></i>
+                                            </a>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <li>
+                                                    <a href="{{ route('asset-maintenances.show', $asset) }}"
+                                                        class="dropdown-item d-flex align-items-center gap-3">
+                                                        <i class="fs-4 ti ti-eye"></i>Detail
+                                                    </a>
+                                                </li>
+                                                @if (auth()->user()->isNotPrincipal())
+                                                    <li>
+                                                        <a href="{{ route('asset-maintenances.edit', $asset) }}"
+                                                            class="dropdown-item d-flex align-items-center gap-3">
+                                                            <i class="fs-4 ti ti-pencil"></i>Edit
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <form
+                                                            onsubmit="return confirm('Apakah anda yakin ingin menghapus aset ini?')"
+                                                            action="{{ route('asset-maintenances.destroy', $asset) }}"
+                                                            method="post">
+                                                            @csrf
+                                                            @method('delete')
+                                                            <button type="submit"
+                                                                class="dropdown-item d-flex align-items-center gap-3">
+                                                                <i class="fs-4 ti ti-trash"></i>Hapus
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                @endif
+                                            </ul>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center">
+                                    <td colspan="9" class="text-center">
                                         <p class="fs-3 text-muted mb-0">Tidak ada aset ditemukan</p>
                                     </td>
                                 </tr>
@@ -126,23 +161,8 @@
                         </tbody>
                     </table>
                 </div>
-                <div class='px-4 mt-3'>{{ $assets->links() }}</div>
+                <div class='px-4 mt-3'>{{ $assets->appends(request()->query())->links() }}</div>
             </div>
         </div>
     </div>
-@endsection
-
-@section('script')
-    <script>
-        // Menangani peringatan sukses
-        var successAlert = document.getElementById('success-alert');
-        if (successAlert) {
-            setTimeout(function() {
-                successAlert.classList.add('animate__fadeOut');
-                successAlert.addEventListener('animationend', function() {
-                    successAlert.remove();
-                });
-            }, 3000);
-        }
-    </script>
 @endsection

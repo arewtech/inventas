@@ -7,6 +7,7 @@ use App\Http\Controllers\FrontsideController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AssetController;
+use App\Http\Controllers\AssetMaintenanceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HistorySiteController;
 use App\Http\Controllers\LocationController;
@@ -55,18 +56,19 @@ Route::prefix('/dashboard')->middleware(['auth', 'role:admin,operator'])->group(
     Route::middleware('role:admin,operator-asset')->group(function () {
         Route::resource('categories', CategoryController::class);
         Route::resource('locations', LocationController::class);
-        Route::resource('assets', AssetController::class);
 
-        // Asset damaged routes
-        Route::get('/assets/{asset}/mark-damaged', [AssetController::class, 'markDamaged'])->name('assets.mark-damaged');
-        Route::post('/assets/{asset}/store-damaged', [AssetController::class, 'storeDamaged'])->name('assets.store-damaged');
-        Route::post('/assets/{damagedAsset}/restore-damaged', [AssetController::class, 'restoreDamaged'])->name('assets.restore-damaged');
-        Route::delete('/assets/{damagedAsset}/destroy-damaged', [AssetController::class, 'destroyDamaged'])->name('assets.destroy-damaged');
+        // Asset routes (only index, create, store, show for redirect)
+        Route::get('/assets', [AssetController::class, 'index'])->name('assets.index');
+        Route::get('/assets/create', [AssetController::class, 'create'])->name('assets.create');
+        Route::post('/assets', [AssetController::class, 'store'])->name('assets.store');
+        Route::get('/assets/detail', [AssetController::class, 'show'])->name('assets.show');
+
+        // Asset Maintenance routes (individual asset CRUD)
+        Route::resource('asset-maintenances', AssetMaintenanceController::class);
 
         Route::get('/asset-borrowings/location/{location}/assets', [AssetBorrowingController::class, 'getAssetsByLocation'])->name('asset-borrowings.assets-by-location');
         Route::resource('asset-borrowings', AssetBorrowingController::class);
         Route::put('asset-borrowings/{assetBorrowing}/return', [AssetBorrowingController::class, 'return'])->name('asset-borrowings.return');
-        Route::get('/assets/{asset}/print-qr', [AssetController::class, 'printQr'])->name('assets.print-qr');
         Route::get('/reports/assets', [ReportController::class, 'assetsReport'])->name('reports.assets');
         Route::get('/reports/asset-borrowings', [ReportController::class, 'assetBorrowingsReport'])->name('reports.asset-borrowings');
     });

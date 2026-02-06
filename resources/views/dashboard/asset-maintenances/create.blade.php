@@ -65,7 +65,6 @@
                             <label for="quantity" class="form-label">Jumlah</label>
                             <input type="number" class="form-control" id="quantity" name="quantity"
                                 value="{{ old('quantity', 1) }}" min="1" required>
-                            <small class="text-muted">Otomatis dibuat sebagai aset individual dengan nomor & QR unik</small>
                             @error('quantity')
                                 <div class="text-danger mt-1">{{ $message }}</div>
                             @enderror

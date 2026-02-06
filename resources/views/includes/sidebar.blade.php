@@ -67,6 +67,15 @@
                         </a>
                     </li>
                     <li class="sidebar-item">
+                        <a class="sidebar-link {{ Route::is('asset-maintenances*') ? 'active' : '' }}"
+                            href="{{ route('asset-maintenances.index') }}" aria-expanded="false">
+                            <span>
+                                <i class="ti ti-tools"></i>
+                            </span>
+                            <span class="hide-menu">Pemeliharaan Aset</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
                         <a class="sidebar-link {{ Route::is('asset-borrowings*') ? 'active' : '' }}"
                             href="{{ route('asset-borrowings.index') }}" aria-expanded="false">
                             <span>

@@ -18,7 +18,6 @@ class Asset extends Model
         'quantity',
         'condition',
         'location_id',
-        'parent_asset_id',
         'qr_code',
         'image',
         'additional_info'
@@ -37,57 +36,6 @@ class Asset extends Model
     public function borrowings()
     {
         return $this->hasMany(AssetBorrowing::class);
-    }
-
-    /**
-     * Parent asset relationship (for damaged assets)
-     */
-    public function parentAsset()
-    {
-        return $this->belongsTo(Asset::class, 'parent_asset_id');
-    }
-
-    /**
-     * Damaged assets relationship (children)
-     */
-    public function damagedAssets()
-    {
-        return $this->hasMany(Asset::class, 'parent_asset_id')->where('condition', 'rusak');
-    }
-
-    /**
-     * Check if this asset is a damaged child asset
-     */
-    public function isDamagedChild()
-    {
-        return !is_null($this->parent_asset_id);
-    }
-
-    /**
-     * Check if this asset is a parent (main) asset
-     */
-    public function isParentAsset()
-    {
-        return is_null($this->parent_asset_id);
-    }
-
-    /**
-     * Get total damaged quantity for this asset
-     */
-    public function getTotalDamagedQuantityAttribute()
-    {
-        return $this->damagedAssets()->sum('quantity');
-    }
-
-    /**
-     * Get original total quantity (current + damaged)
-     */
-    public function getOriginalQuantityAttribute()
-    {
-        if ($this->isParentAsset()) {
-            return $this->quantity + $this->getTotalDamagedQuantityAttribute();
-        }
-        return $this->quantity;
     }
 
     public function getRouteKeyName()

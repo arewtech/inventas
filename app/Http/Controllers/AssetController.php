@@ -12,12 +12,22 @@ use Illuminate\Support\Facades\Storage;
 class AssetController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource (grouped by name, category, location).
      */
     public function index(Request $request)
     {
-        $query = Asset::with(['category', 'location'])
-            ->whereNull('parent_asset_id'); // Only show parent assets
+        $query = Asset::selectRaw('
+                name,
+                category_id,
+                location_id,
+                COUNT(*) as total_assets,
+                SUM(CASE WHEN `condition` = "baik" THEN 1 ELSE 0 END) as total_baik,
+                SUM(CASE WHEN `condition` = "rusak" THEN 1 ELSE 0 END) as total_rusak,
+                MAX(image) as image,
+                MAX(created_at) as created_at
+            ')
+            ->with(['category', 'location'])
+            ->groupBy('name', 'category_id', 'location_id');
 
         // Filter by search query
         if($request->has('q') && $request->q != '') {
@@ -40,7 +50,7 @@ class AssetController extends Controller
             $query->where('category_id', $request->category);
         }
 
-        $assets = $query->latest()->paginate(10);
+        $assets = $query->orderBy('created_at', 'desc')->paginate(10);
 
         return view('dashboard.assets.index', compact('assets'));
     }
@@ -57,6 +67,7 @@ class AssetController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * Creates individual asset records based on quantity.
      */
     public function store(Request $request)
     {
@@ -71,113 +82,65 @@ class AssetController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $data = $request->all();
+        $quantity = $request->quantity;
+        $imagePath = null;
 
-        // Generate unique asset number automatically
-        $data['asset_number'] = Asset::generateAssetNumber();
-
-        // Set location name from location_id for backward compatibility
-        if ($request->location_id) {
-            $location = Location::find($request->location_id);
-            $data['location'] = $location->name;
-        }
-
-        // Handle image upload
+        // Handle image upload once
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('images/assets', 'public');
-            $data['image'] = $imagePath;
         }
 
-        $asset = Asset::create($data);
-        // Generate QR code with URL to public asset view
         $baseUrl = env('APP_URL', 'http://localhost');
-        $assetUrl = $baseUrl . '/asset/' . $asset->asset_number . '/view';
+        $createdAssets = [];
 
-        // Store the QR code URL in the database
-        $asset->qr_code = $assetUrl;
-        $asset->save();
+        // Create individual assets based on quantity
+        for ($i = 0; $i < $quantity; $i++) {
+            $assetNumber = Asset::generateAssetNumber();
 
-        return redirect()->route('assets.show', $asset->asset_number)
-            ->with('success', 'Aset berhasil ditambahkan');
+            $asset = Asset::create([
+                'name' => $request->name,
+                'asset_number' => $assetNumber,
+                'description' => $request->description,
+                'category_id' => $request->category_id,
+                'location_id' => $request->location_id,
+                'quantity' => 1, // Each row represents 1 physical asset
+                'condition' => $request->condition,
+                'image' => $imagePath,
+                'additional_info' => $request->additional_info,
+            ]);
+
+            // Generate unique QR code for each asset
+            $assetUrl = $baseUrl . '/asset/' . $asset->asset_number . '/view';
+            $asset->qr_code = $assetUrl;
+            $asset->save();
+
+            $createdAssets[] = $asset;
+        }
+
+        return redirect()->route('asset-maintenances.index', [
+                'name' => $request->name,
+                'category' => $request->category_id,
+                'location' => $request->location_id
+            ])
+            ->with('success', "Berhasil menambahkan {$quantity} aset baru");
     }
 
     /**
      * Display the specified resource.
+     * Redirects to asset maintenance list with filters.
      */
-    public function show(Asset $asset)
+    public function show(Request $request)
     {
-        return view('dashboard.assets.show', compact('asset'));
-    }
+        // Get filter parameters from request
+        $name = $request->query('name');
+        $category = $request->query('category');
+        $location = $request->query('location');
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Asset $asset)
-    {
-        $categories = Category::all();
-        $locations = Location::all();
-        return view('dashboard.assets.edit', compact('asset', 'categories', 'locations'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Asset $asset)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'category_id' => 'required|exists:categories,id',
-            'quantity' => 'required|integer|min:1',
-            'condition' => 'required|string|in:baik,rusak',
-            'location_id' => 'required|exists:locations,id',
-            'additional_info' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        return redirect()->route('asset-maintenances.index', [
+            'name' => $name,
+            'category' => $category,
+            'location' => $location
         ]);
-
-        $data = $request->all();
-
-        // Remove asset_number from the data to prevent updating it
-        unset($data['asset_number']);
-        unset($data['qr_code']);
-
-        // Set location name from location_id for backward compatibility
-        if ($request->location_id) {
-            $location = Location::find($request->location_id);
-            $data['location'] = $location->name;
-        }
-
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($asset->image) {
-                Storage::disk('public')->delete($asset->image);
-            }
-
-            $imagePath = $request->file('image')->store('images/assets', 'public');
-            $data['image'] = $imagePath;
-        }
-
-        $asset->update($data);
-
-        return redirect()->route('assets.index')
-            ->with('success', 'Aset berhasil diperbarui');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Asset $asset)
-    {
-        // Delete image if exists
-        if ($asset->image) {
-            Storage::disk('public')->delete($asset->image);
-        }
-
-        $asset->delete();
-
-        return redirect()->route('assets.index')
-            ->with('success', 'Aset berhasil dihapus');
     }
 
     /**
@@ -202,132 +165,5 @@ class AssetController extends Controller
             'asset' => $asset,
             'message' => $message
         ]);
-    }
-
-    public function printQr(Asset $asset)
-    {
-        return view('dashboard.assets.print-qr', compact('asset'));
-    }
-
-    /**
-     * Show form to mark asset as damaged
-     */
-    public function markDamaged(Asset $asset)
-    {
-        // Only allow marking parent assets as damaged
-        if ($asset->isDamagedChild()) {
-            return redirect()->route('assets.index')
-                ->with('error', 'Tidak bisa menandai aset rusak sebagai rusak lagi');
-        }
-
-        // Check if there's available quantity
-        if ($asset->quantity <= 0) {
-            return redirect()->route('assets.show', $asset->asset_number)
-                ->with('error', 'Tidak ada quantity tersedia untuk ditandai rusak');
-        }
-
-        return view('dashboard.assets.mark-damaged', compact('asset'));
-    }
-
-    /**
-     * Store damaged asset record
-     */
-    public function storeDamaged(Request $request, Asset $asset)
-    {
-        // Validate
-        $request->validate([
-            'quantity' => 'required|integer|min:1|max:' . $asset->quantity,
-            'description' => 'required|string',
-            'additional_info' => 'nullable|string',
-        ]);
-
-        // Only allow marking parent assets as damaged
-        if ($asset->isDamagedChild()) {
-            return redirect()->route('assets.index')
-                ->with('error', 'Tidak bisa menandai aset rusak sebagai rusak lagi');
-        }
-
-        // Check if there's enough quantity
-        if ($request->quantity > $asset->quantity) {
-            return redirect()->back()
-                ->with('error', 'Quantity yang rusak melebihi quantity tersedia')
-                ->withInput();
-        }
-
-        // Create damaged asset record
-        $damagedAsset = Asset::create([
-            'name' => $asset->name . ' (Rusak)',
-            'asset_number' => Asset::generateAssetNumber(),
-            'description' => $request->description,
-            'category_id' => $asset->category_id,
-            'location_id' => $asset->location_id,
-            'quantity' => $request->quantity,
-            'condition' => 'rusak',
-            'parent_asset_id' => $asset->id,
-            'additional_info' => $request->additional_info,
-            'image' => $asset->image, // Use same image as parent
-        ]);
-
-        // Generate QR code for damaged asset
-        $baseUrl = env('APP_URL', 'http://localhost');
-        $assetUrl = $baseUrl . '/asset/' . $damagedAsset->asset_number . '/view';
-        $damagedAsset->qr_code = $assetUrl;
-        $damagedAsset->save();
-
-        // Decrease parent asset quantity
-        $asset->decrement('quantity', $request->quantity);
-
-        return redirect()->route('assets.show', $asset->asset_number)
-            ->with('success', "Berhasil menandai {$request->quantity} aset sebagai rusak");
-    }
-
-    /**
-     * Restore damaged asset (return to parent)
-     */
-    public function restoreDamaged(Asset $damagedAsset)
-    {
-        // Only allow restoring damaged child assets
-        if (!$damagedAsset->isDamagedChild()) {
-            return redirect()->route('assets.index')
-                ->with('error', 'Hanya aset rusak yang bisa dipulihkan');
-        }
-
-        $parentAsset = $damagedAsset->parentAsset;
-        $quantity = $damagedAsset->quantity;
-
-        // Return quantity to parent asset
-        $parentAsset->increment('quantity', $quantity);
-
-        // Delete damaged asset record
-        $damagedAsset->delete();
-
-        return redirect()->route('assets.show', $parentAsset->asset_number)
-            ->with('success', "Berhasil memulihkan {$quantity} aset ke kondisi baik");
-    }
-
-    /**
-     * Delete damaged asset permanently
-     */
-    public function destroyDamaged(Asset $damagedAsset)
-    {
-        // Only allow deleting damaged child assets
-        if (!$damagedAsset->isDamagedChild()) {
-            return redirect()->route('assets.index')
-                ->with('error', 'Hanya aset rusak yang bisa dihapus melalui fungsi ini');
-        }
-
-        $parentAsset = $damagedAsset->parentAsset;
-        $quantity = $damagedAsset->quantity;
-
-        // Delete image if exists
-        if ($damagedAsset->image && $damagedAsset->image !== $parentAsset->image) {
-            Storage::disk('public')->delete($damagedAsset->image);
-        }
-
-        // Delete damaged asset record
-        $damagedAsset->delete();
-
-        return redirect()->route('assets.show', $parentAsset->asset_number)
-            ->with('success', "Berhasil menghapus {$quantity} aset rusak");
     }
 }
