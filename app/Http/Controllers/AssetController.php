@@ -17,12 +17,14 @@ class AssetController extends Controller
     public function index(Request $request)
     {
         $query = Asset::selectRaw('
+                MIN(id) as id,
                 name,
                 category_id,
                 location_id,
                 COUNT(*) as total_assets,
                 SUM(CASE WHEN `condition` = "baik" THEN 1 ELSE 0 END) as total_baik,
                 SUM(CASE WHEN `condition` = "rusak" THEN 1 ELSE 0 END) as total_rusak,
+                SUM(CASE WHEN `condition` = "perbaikan" THEN 1 ELSE 0 END) as total_perbaikan,
                 MAX(image) as image,
                 MAX(created_at) as created_at
             ')
@@ -117,30 +119,180 @@ class AssetController extends Controller
             $createdAssets[] = $asset;
         }
 
-        return redirect()->route('asset-maintenances.index', [
-                'name' => $request->name,
-                'category' => $request->category_id,
-                'location' => $request->location_id
-            ])
+        // Get the first created asset to redirect to its detail page
+        $firstAsset = $createdAssets[0];
+
+        return redirect()->route('assets.show', $firstAsset->id)
             ->with('success', "Berhasil menambahkan {$quantity} aset baru");
     }
 
     /**
-     * Display the specified resource.
-     * Redirects to asset maintenance list with filters.
+     * Display the specified grouped asset.
      */
-    public function show(Request $request)
+    public function show($id)
     {
-        // Get filter parameters from request
-        $name = $request->query('name');
-        $category = $request->query('category');
-        $location = $request->query('location');
+        // Find the specific asset by ID
+        $asset = Asset::with(['category', 'location'])->findOrFail($id);
 
-        return redirect()->route('asset-maintenances.index', [
-            'name' => $name,
-            'category' => $category,
-            'location' => $location
+        // Get grouped summary for assets with same name, category, and location
+        $groupedAsset = Asset::selectRaw('
+                name,
+                category_id,
+                location_id,
+                COUNT(*) as total_assets,
+                SUM(CASE WHEN `condition` = "baik" THEN 1 ELSE 0 END) as total_baik,
+                SUM(CASE WHEN `condition` = "rusak" THEN 1 ELSE 0 END) as total_rusak,
+                SUM(CASE WHEN `condition` = "perbaikan" THEN 1 ELSE 0 END) as total_perbaikan,
+                MAX(image) as image,
+                MAX(description) as description,
+                MAX(additional_info) as additional_info,
+                MAX(qr_code) as qr_code,
+                MAX(created_at) as created_at
+            ')
+            ->where('name', $asset->name)
+            ->where('category_id', $asset->category_id)
+            ->where('location_id', $asset->location_id)
+            ->with(['category', 'location'])
+            ->groupBy('name', 'category_id', 'location_id')
+            ->first();
+
+        if (!$groupedAsset) {
+            return redirect()->route('assets.index')->with('error', 'Aset tidak ditemukan');
+        }
+
+        // Get individual assets in this group
+        $individualAssets = Asset::where('name', $asset->name)
+            ->where('category_id', $asset->category_id)
+            ->where('location_id', $asset->location_id)
+            ->with(['category', 'location'])
+            ->latest()
+            ->paginate(10);
+
+        return view('dashboard.assets.show', compact('groupedAsset', 'individualAssets'));
+    }
+
+    /**
+     * Show the form for editing the grouped asset.
+     */
+    public function edit($id)
+    {
+        // Get the asset by ID
+        $asset = Asset::with(['category', 'location'])->findOrFail($id);
+
+        $categories = Category::all();
+        $locations = Location::all();
+
+        return view('dashboard.assets.edit', compact('asset', 'categories', 'locations'));
+    }
+
+    /**
+     * Update the grouped asset (updates all assets in the group).
+     */
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'category_id' => 'required|exists:categories,id',
+            'location_id' => 'required|exists:locations,id',
+            'additional_info' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
+
+        // Find the asset being edited
+        $asset = Asset::findOrFail($id);
+
+        // Get old values for finding the group
+        $oldName = $asset->name;
+        $oldCategory = $asset->category_id;
+        $oldLocation = $asset->location_id;
+
+        // Find all assets in the group
+        $assets = Asset::where('name', $oldName)
+            ->where('category_id', $oldCategory)
+            ->where('location_id', $oldLocation)
+            ->get();
+
+        if ($assets->isEmpty()) {
+            return redirect()->route('assets.index')->with('error', 'Aset tidak ditemukan');
+        }
+
+        $updateData = [
+            'name' => $request->name,
+            'description' => $request->description,
+            'category_id' => $request->category_id,
+            'location_id' => $request->location_id,
+            'additional_info' => $request->additional_info,
+        ];
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $oldImage = $assets->first()->image;
+            $imagePath = $request->file('image')->store('images/assets', 'public');
+            $updateData['image'] = $imagePath;
+
+            // Delete old image if exists
+            if ($oldImage && Storage::disk('public')->exists($oldImage)) {
+                Storage::disk('public')->delete($oldImage);
+            }
+        }
+
+        // Update all assets in the group
+        Asset::where('name', $oldName)
+            ->where('category_id', $oldCategory)
+            ->where('location_id', $oldLocation)
+            ->update($updateData);
+
+        return redirect()->route('assets.show', $id)
+            ->with('success', 'Aset berhasil diperbarui');
+    }
+
+    /**
+     * Delete all assets in a group.
+     */
+    public function destroy($id)
+    {
+        // Find the asset by ID
+        $asset = Asset::findOrFail($id);
+
+        // Get the group identifiers
+        $name = $asset->name;
+        $category_id = $asset->category_id;
+        $location_id = $asset->location_id;
+
+        // Find all assets in the group
+        $assets = Asset::where('name', $name)
+            ->where('category_id', $category_id)
+            ->where('location_id', $location_id)
+            ->get();
+
+        if ($assets->isEmpty()) {
+            return redirect()->route('assets.index')->with('error', 'Grup aset tidak ditemukan');
+        }
+
+        $totalDeleted = $assets->count();
+
+        // Get the image path before deletion (for cleanup)
+        $imagePath = $assets->first()->image;
+
+        // Delete all maintenance records for these assets
+        foreach ($assets as $groupAsset) {
+            $groupAsset->maintenances()->delete();
+        }
+
+        // Delete all assets in the group
+        Asset::where('name', $name)
+            ->where('category_id', $category_id)
+            ->where('location_id', $location_id)
+            ->delete();
+
+        // Delete image if exists (shared by all assets in group)
+        if ($imagePath && Storage::disk('public')->exists($imagePath)) {
+            Storage::disk('public')->delete($imagePath);
+        }
+
+        return redirect()->route('assets.index')
+            ->with('success', "Berhasil menghapus {$totalDeleted} aset dalam grup");
     }
 
     /**

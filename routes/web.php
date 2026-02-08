@@ -57,13 +57,10 @@ Route::prefix('/dashboard')->middleware(['auth', 'role:admin,operator'])->group(
         Route::resource('categories', CategoryController::class);
         Route::resource('locations', LocationController::class);
 
-        // Asset routes (only index, create, store, show for redirect)
-        Route::get('/assets', [AssetController::class, 'index'])->name('assets.index');
-        Route::get('/assets/create', [AssetController::class, 'create'])->name('assets.create');
-        Route::post('/assets', [AssetController::class, 'store'])->name('assets.store');
-        Route::get('/assets/detail', [AssetController::class, 'show'])->name('assets.show');
+        // Asset routes (Management Asset - resource style)
+        Route::resource('assets', AssetController::class);
 
-        // Asset Maintenance routes (individual asset CRUD)
+        // Asset Maintenance routes (maintenance record CRUD)
         Route::resource('asset-maintenances', AssetMaintenanceController::class);
 
         Route::get('/asset-borrowings/location/{location}/assets', [AssetBorrowingController::class, 'getAssetsByLocation'])->name('asset-borrowings.assets-by-location');

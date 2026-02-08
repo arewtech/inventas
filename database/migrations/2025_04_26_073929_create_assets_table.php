@@ -18,8 +18,7 @@ return new class extends Migration {
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->foreignId('location_id')->constrained()->onDelete('cascade');
             $table->integer('quantity')->default(1);
-            $table->string('condition')->default('baik'); // baik, rusak
-            $table->foreignId('parent_asset_id')->nullable()->constrained('assets')->onDelete('cascade');
+            $table->string('condition')->default('baik'); // baik, rusak, perbaikan
             $table->string('qr_code')->nullable();
             $table->string('image')->nullable();
             $table->string('additional_info')->nullable();

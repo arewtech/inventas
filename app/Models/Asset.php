@@ -38,6 +38,11 @@ class Asset extends Model
         return $this->hasMany(AssetBorrowing::class);
     }
 
+    public function maintenances()
+    {
+        return $this->hasMany(AssetMaintenance::class);
+    }
+
     public function getRouteKeyName()
     {
         return 'asset_number';
@@ -47,9 +52,11 @@ class Asset extends Model
     {
         switch ($this->condition) {
             case 'baik':
-                return 'bg-primary-subtle text-primary';
+                return 'bg-success-subtle text-success';
             case 'rusak':
                 return 'bg-danger-subtle text-danger';
+            case 'perbaikan':
+                return 'bg-warning-subtle text-warning';
             default:
                 return 'bg-secondary-subtle text-muted';
         }

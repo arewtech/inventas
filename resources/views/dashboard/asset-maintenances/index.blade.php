@@ -4,53 +4,53 @@
         <div class="d-sm-flex d-block align-items-center justify-content-between mb-7">
             <div class="mb-3 mb-sm-0">
                 <h5 class="card-title fw-semibold">Pemeliharaan Aset</h5>
-                <p class="card-subtitle mb-0">Daftar detail individual aset untuk pemeliharaan</p>
+                <p class="card-subtitle mb-0">Riwayat pemeliharaan aset</p>
             </div>
             <div class="d-flex align-items-center gap-2">
                 <div>
                     <form action="{{ route('asset-maintenances.index') }}" method="get">
-                        @if (request('name'))
-                            <input type="hidden" name="name" value="{{ request('name') }}">
-                        @endif
                         <div class="input-group">
-                            <select name="category" class="form-select" style="max-width: 170px;">
+                            <select name="category" class="form-select" style="max-width: 150px;">
                                 <option value="">Semua Kategori</option>
                                 @foreach (\App\Models\Category::all() as $category)
                                     <option value="{{ $category->id }}"
-                                        {{ request()->category == $category->id ? 'selected' : '' }}>
+                                        {{ request('category') == $category->id ? 'selected' : '' }}>
                                         {{ $category->name }}
                                     </option>
                                 @endforeach
                             </select>
-                            <select name="location" class="form-select" style="max-width: 170px;">
+                            <select name="location" class="form-select" style="max-width: 150px;">
                                 <option value="">Semua Lokasi</option>
                                 @foreach (\App\Models\Location::all() as $location)
                                     <option value="{{ $location->id }}"
-                                        {{ request()->location == $location->id ? 'selected' : '' }}>
+                                        {{ request('location') == $location->id ? 'selected' : '' }}>
                                         {{ $location->name }}
                                     </option>
                                 @endforeach
                             </select>
-                            <input type="text" name="q" value="{{ request()->q }}" autofocus class="form-control"
-                                placeholder="Cari nama/nomor aset" aria-label="Cari" aria-describedby="button-addon2">
-                            <button class="btn btn-outline-primary" type="submit" id="button-addon2">
+                            <select name="condition" class="form-select" style="max-width: 150px;">
+                                <option value="">Semua Kondisi</option>
+                                <option value="baik" {{ request('condition') == 'baik' ? 'selected' : '' }}>Baik</option>
+                                <option value="rusak" {{ request('condition') == 'rusak' ? 'selected' : '' }}>Rusak
+                                </option>
+                                <option value="perbaikan" {{ request('condition') == 'perbaikan' ? 'selected' : '' }}>
+                                    Perbaikan</option>
+                            </select>
+                            <input type="text" name="q" value="{{ request('q') }}" autofocus class="form-control"
+                                placeholder="Cari nama/nomor aset" aria-label="Cari">
+                            <button class="btn btn-outline-primary" type="submit">
                                 <i class="ti ti-search"></i>
                             </button>
                         </div>
                     </form>
                 </div>
-                <a href="{{ route('assets.index') }}" class="btn btn-secondary">
-                    <i class="ti ti-arrow-left"></i> Kembali
-                </a>
+                @if (auth()->user()->isNotPrincipal())
+                    <a href="{{ route('asset-maintenances.create') }}" class="btn btn-primary">
+                        <i class="ti ti-plus"></i> Tambah Pemeliharaan
+                    </a>
+                @endif
             </div>
         </div>
-
-        @if (request('name'))
-            <div class="alert alert-info">
-                <i class="ti ti-info-circle me-2"></i>
-                Menampilkan detail aset: <strong>{{ request('name') }}</strong>
-            </div>
-        @endif
 
         <div class="card w-100">
             <div class="card-body">
@@ -59,58 +59,62 @@
                         <thead>
                             <tr class="text-muted fw-semibold">
                                 <th scope="col">No</th>
-                                <th scope="col">Gambar</th>
-                                <th scope="col">Nomor Aset</th>
-                                <th scope="col">Nama</th>
+                                {{-- <th scope="col">Nomor Aset</th> --}}
+                                <th scope="col">Nama Aset</th>
                                 <th scope="col">Kategori</th>
                                 <th scope="col">Lokasi</th>
                                 <th scope="col">Kondisi</th>
-                                <th scope="col">Dibuat</th>
+                                <th scope="col">Nominal</th>
+                                <th scope="col">Tanggal</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody class="border-top">
-                            @forelse ($assets as $asset)
+                            @forelse ($maintenances as $maintenance)
                                 <tr>
                                     <td>
                                         <p class="mb-0">
-                                            {{ $loop->iteration + ($assets->currentPage() - 1) * $assets->perPage() }}
+                                            {{ $loop->iteration + ($maintenances->currentPage() - 1) * $maintenances->perPage() }}
                                         </p>
                                     </td>
-                                    <td>
-                                        @if ($asset->image)
-                                            <img src="{{ asset('storage/' . $asset->image) }}" alt="{{ $asset->name }}"
-                                                class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
-                                        @else
-                                            <div class="rounded bg-light d-flex align-items-center justify-content-center"
-                                                style="width: 50px; height: 50px;">
-                                                <i class="ti ti-photo-off text-muted"></i>
-                                            </div>
-                                        @endif
-                                    </td>
-                                    <td>
+                                    {{-- <td>
                                         <span
-                                            class="text-uppercase fw-semibold text-primary">{{ $asset->asset_number }}</span>
-                                    </td>
+                                            class="text-uppercase fw-semibold text-primary">{{ $maintenance->asset->asset_number }}</span>
+                                    </td> --}}
                                     <td>
-                                        <span class="text-capitalize">{{ $asset->name }}</span>
+                                        <span class="text-capitalize">{{ $maintenance->asset->name }}</span>
                                     </td>
                                     <td>
                                         <span class="badge bg-primary-subtle text-primary rounded-3 fw-semibold fs-2">
-                                            {{ $asset->category->name }}
+                                            {{ $maintenance->asset->category->name }}
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="text-capitalize">{{ $asset->location->name }}</span>
+                                        <span class="text-capitalize">{{ $maintenance->asset->location->name }}</span>
                                     </td>
                                     <td>
-                                        <span class="badge {{ $asset->status_color }} rounded-3 fw-semibold fs-2">
-                                            {{ ucfirst($asset->condition) }}
-                                        </span>
+                                        @if ($maintenance->condition == 'baik')
+                                            <span
+                                                class="badge bg-success-subtle text-success rounded-3 fw-semibold fs-2">Baik</span>
+                                        @elseif($maintenance->condition == 'rusak')
+                                            <span
+                                                class="badge bg-danger-subtle text-danger rounded-3 fw-semibold fs-2">Rusak</span>
+                                        @else
+                                            <span
+                                                class="badge bg-warning-subtle text-warning rounded-3 fw-semibold fs-2">Perbaikan</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($maintenance->nominal)
+                                            <span class="fw-semibold">Rp
+                                                {{ number_format($maintenance->nominal, 0, ',', '.') }}</span>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
                                     </td>
                                     <td>
                                         <p class="fs-3 text-dark mb-0">
-                                            {{ $asset->created_at->format('d/m/Y') }}
+                                            {{ $maintenance->created_at->format('d/m/Y H:i') }}
                                         </p>
                                     </td>
                                     <td>
@@ -121,25 +125,25 @@
                                             </a>
                                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                 <li>
-                                                    <a href="{{ route('asset-maintenances.show', $asset) }}"
+                                                    <a href="{{ route('asset-maintenances.show', $maintenance) }}"
                                                         class="dropdown-item d-flex align-items-center gap-3">
                                                         <i class="fs-4 ti ti-eye"></i>Detail
                                                     </a>
                                                 </li>
                                                 @if (auth()->user()->isNotPrincipal())
                                                     <li>
-                                                        <a href="{{ route('asset-maintenances.edit', $asset) }}"
+                                                        <a href="{{ route('asset-maintenances.edit', $maintenance) }}"
                                                             class="dropdown-item d-flex align-items-center gap-3">
                                                             <i class="fs-4 ti ti-pencil"></i>Edit
                                                         </a>
                                                     </li>
                                                     <li>
                                                         <form
-                                                            onsubmit="return confirm('Apakah anda yakin ingin menghapus aset ini?')"
-                                                            action="{{ route('asset-maintenances.destroy', $asset) }}"
-                                                            method="post">
+                                                            action="{{ route('asset-maintenances.destroy', $maintenance) }}"
+                                                            method="POST"
+                                                            onsubmit="return confirm('Yakin ingin menghapus record pemeliharaan ini?')">
                                                             @csrf
-                                                            @method('delete')
+                                                            @method('DELETE')
                                                             <button type="submit"
                                                                 class="dropdown-item d-flex align-items-center gap-3">
                                                                 <i class="fs-4 ti ti-trash"></i>Hapus
@@ -154,14 +158,14 @@
                             @empty
                                 <tr>
                                     <td colspan="9" class="text-center">
-                                        <p class="fs-3 text-muted mb-0">Tidak ada aset ditemukan</p>
+                                        <p class="fs-3 text-muted mb-0">Tidak ada record pemeliharaan ditemukan</p>
                                     </td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
-                <div class='px-4 mt-3'>{{ $assets->appends(request()->query())->links() }}</div>
+                <div class='px-4 mt-3'>{{ $maintenances->appends(request()->query())->links() }}</div>
             </div>
         </div>
     </div>

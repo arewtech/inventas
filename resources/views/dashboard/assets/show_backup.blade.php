@@ -25,9 +25,8 @@
                                     <th class="bg-light" width="200" style="vertical-align: middle;">Gambar</th>
                                     <td>
                                         @if ($groupedAsset->image)
-                                            <img src="{{ asset('storage/' . $groupedAsset->image) }}"
-                                                alt="{{ $groupedAsset->name }}" class="img-fluid rounded"
-                                                style="max-width: 180px;">
+                                            <img src="{{ asset('storage/' . $groupedAsset->image) }}" alt="{{ $groupedAsset->name }}"
+                                                class="img-fluid rounded" style="max-width: 180px;">
                                         @else
                                             <div class="rounded bg-light d-flex align-items-center justify-content-center"
                                                 style="width: 50px; height: 50px;">
@@ -130,36 +129,89 @@
                     </div>
                 </div>
 
-                <!-- Alert for Damaged Assets -->
-                @if ($groupedAsset->total_rusak > 0)
+                <!-- Individual Assets List removed Damaged Assets Section -->
                     <div class="row mt-4">
                         <div class="col-12">
-                            <div class="alert alert-danger">
-                                <i class="ti ti-alert-circle me-2"></i>
-                                <strong>Perhatian!</strong> Terdapat {{ $groupedAsset->total_rusak }} unit aset dalam
-                                kondisi rusak dari total {{ $groupedAsset->total_assets }} unit.
+                            <div class="card border-danger">
+                                <div class="card-header bg-danger-subtle">
+                                    <h5 class="card-title mb-0 text-danger">
+                                        <i class="ti ti-alert-circle me-2"></i>Aset Rusak
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered align-middle">
+                                            <thead class="bg-light">
+                                                <tr>
+                                                    <th width="50">No</th>
+                                                    <th>Nomor Aset</th>
+                                                    <th>Jumlah Rusak</th>
+                                                    <th>Deskripsi Kerusakan</th>
+                                                    <th>Tanggal Rusak</th>
+                                                    <th width="200">Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($groupedAsset->damagedAssets as $damaged)
+                                                    <tr>
+                                                        <td>{{ $loop->iteration }}</td>
+                                                        <td>
+                                                            <code>{{ $damaged->asset_number }}</code>
+                                                        </td>
+                                                        <td>
+                                                            <span
+                                                                class="badge bg-danger-subtle text-danger">{{ $damaged->quantity }}</span>
+                                                        </td>
+                                                        <td>{{ $damaged->description ?? '-' }}</td>
+                                                        <td>{{ $damaged->created_at->format('d/m/Y H:i') }}</td>
+                                                        <td>
+                                                            <div class="d-flex gap-1">
+                                                                <form
+                                                                    action="{{ route('assets.restore-damaged', $damaged->asset_number) }}"
+                                                                    method="POST"
+                                                                    onsubmit="return confirm('Yakin ingin memulihkan aset ini ke kondisi baik?')">
+                                                                    @csrf
+                                                                    <button type="submit" class="btn btn-sm btn-success"
+                                                                        title="Pulihkan ke Baik">
+                                                                        <i class="ti ti-refresh"></i>
+                                                                    </button>
+                                                                </form>
+                                                                <form
+                                                                    action="{{ route('assets.destroy-damaged', $damaged->asset_number) }}"
+                                                                    method="POST"
+                                                                    onsubmit="return confirm('Yakin ingin menghapus aset rusak ini?')">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="btn btn-sm btn-danger"
+                                                                        title="Hapus Permanen">
+                                                                        <i class="ti ti-trash"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                            <tfoot class="bg-light">
+                                                <tr>
+                                                    <td colspan="2" class="text-end"><strong>Total Rusak:</strong></td>
+                                                    <td colspan="4">
+                                                        <span
+                                                            class="badge bg-danger fs-4">{{ $groupedAsset->total_damaged_quantity }}</span>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 @endif
 
-                <!-- QR Code Testing Section -->
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-header bg-light">
-                                <h5 class="card-title mb-0">
-                                    <i class="ti ti-test-pipe me-2"></i>Test QR Code
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label class="form-label fw-semibold">URL QR Code:</label>
-                                            <div class="input-group">
-                                                <input type="text" class="form-control" id="qrUrl"
-                                                    value="{{ $groupedAsset->qr_code ?? url('/') }}" readonly>
+                <!-- Action Buttons removed -->
+
+                <!-- QR Testing Section removed -->
                                                 <button class="btn btn-outline-dark" type="button" id="copyQrUrl">
                                                     <i class="ti ti-copy"></i>
                                                 </button>
@@ -178,7 +230,7 @@
                                             <button type="button" class="btn btn-primary" id="testQrBtn">
                                                 <i class="ti ti-brand-telegram me-1"></i> Test QR
                                             </button>
-                                            <a href="{{ $groupedAsset->qr_code ?? url('/') }}" target="_blank"
+                                            <a href="{{ $asset->qr_code }}" target="_blank"
                                                 class="btn btn-outline-dark">
                                                 <i class="ti ti-external-link me-1"></i> Buka di Tab Baru
                                             </a>
@@ -202,29 +254,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Action Buttons -->
-                @if (auth()->user()->isNotPrincipal())
-                    <div class="row mt-4">
-                        <div class="col-12">
-                            <div class="d-flex gap-2">
-                                <a href="{{ route('assets.edit', $individualAssets->first()->id) }}"
-                                    class="btn btn-warning">
-                                    <i class="ti ti-edit me-1"></i> Edit Grup Aset
-                                </a>
-                                <form action="{{ route('assets.destroy', $individualAssets->first()->id) }}"
-                                    method="POST"
-                                    onsubmit="return confirm('Yakin ingin menghapus seluruh grup aset ini ({{ $groupedAsset->total_assets }} unit)?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">
-                                        <i class="ti ti-trash me-1"></i> Hapus Grup
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                @endif
             </div>
         </div>
     </div>
@@ -255,40 +284,18 @@
             btnPrint.addEventListener('click', (e) => {
                 e.preventDefault();
 
-                const assetName = @json($groupedAsset->name);
+                const assetName = "{{ $groupedAsset->name }}";
 
-                // Create printable window
-                const qrcodeElement = document.getElementById('qrcode');
-                const canvas = qrcodeElement.querySelector('canvas');
-                const img = qrcodeElement.querySelector('img');
+                // Create the URL for the print page (not available for grouped assets)
+                const printUrl = `#`;
 
-                let qrImageSrc = '';
-                if (canvas) {
-                    qrImageSrc = canvas.toDataURL();
-                } else if (img) {
-                    qrImageSrc = img.src;
+                // Open in a new tab
+                const printTab = window.open(printUrl, '_blank');
+
+                // Focus on the new tab (helps with some browsers)
+                if (printTab) {
+                    printTab.focus();
                 }
-
-                const printWindow = window.open('', '_blank');
-                printWindow.document.write(`
-                    <html>
-                        <head>
-                            <title>QR Code - ${assetName}</title>
-                            <style>
-                                body { text-align: center; font-family: Arial; padding: 20px; }
-                                img { max-width: 300px; }
-                                h2 { margin-top: 20px; }
-                            </style>
-                        </head>
-                        <body>
-                            <h2>${assetName}</h2>
-                            <img src="${qrImageSrc}" />
-                            <p>Scan untuk melihat detail aset</p>
-                            <script>window.onload = () => { window.print(); }<\/script>
-                        </body>
-                    </html>
-                `);
-                printWindow.document.close();
             });
         }
 
@@ -337,7 +344,7 @@
                     const jpgUrl = finalCanvas.toDataURL('image/jpeg', 0.95);
                     const downloadLink = document.createElement('a');
                     downloadLink.href = jpgUrl;
-                    const formatNameSlug = @json($groupedAsset->name).toLowerCase().replace(/ /g, '-').replace(
+                    const formatNameSlug = "{{ $groupedAsset->name }}".toLowerCase().replace(/ /g, '-').replace(
                         /[^\w-]+/g, '');
                     downloadLink.download = 'qrcode-' + formatNameSlug + '.jpg';
                     document.body.appendChild(downloadLink);
@@ -350,8 +357,6 @@
         function initQRCodeTesting() {
             const copyQrUrlBtn = document.getElementById('copyQrUrl');
             const testQrBtn = document.getElementById('testQrBtn');
-
-            if (!copyQrUrlBtn || !testQrBtn) return;
 
             // Copy QR URL to clipboard
             copyQrUrlBtn.addEventListener('click', () => {
@@ -379,7 +384,8 @@
             statusElement.className = 'alert alert-warning';
             statusElement.innerHTML = '<i class="ti ti-loader animate-spin me-1"></i> Sedang menguji QR code...';
 
-            resultElement.innerHTML = '<p class="text-center"><i class="ti ti-loader animate-spin"></i> Loading...</p>';
+            resultElement.innerHTML =
+                '<p class="text-center"><i class="ti ti-loader animate-spin"></i> Loading...</p>';
         }
 
         function testQRCodeUrl(url, statusElement, resultElement) {
@@ -395,7 +401,7 @@
                     resultElement.innerHTML = `
                     <div class="text-success">
                         <p><i class="ti ti-check-circle fs-4"></i> QR code dapat diakses dan berfungsi dengan baik.</p>
-                        <p><strong>URL:</strong> ${url}</p>
+                        <p>URL: ${url}</p>
                     </div>
                 `;
                 })
@@ -407,8 +413,8 @@
                     resultElement.innerHTML = `
                     <div class="text-danger">
                         <p><i class="ti ti-alert-triangle fs-4"></i> QR code tidak dapat diakses.</p>
-                        <p><strong>Error:</strong> ${error.message}</p>
-                        <p><strong>URL:</strong> ${url}</p>
+                        <p>Error: ${error.message}</p>
+                        <p>URL: ${url}</p>
                         <p>Pastikan server Anda dapat diakses dari jaringan eksternal.</p>
                     </div>
                 `;

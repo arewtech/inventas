@@ -100,6 +100,11 @@
                                                     <i class="ti ti-alert-circle me-1"></i>{{ $asset->total_rusak }} Rusak
                                                 </span>
                                             @endif
+                                            @if (($asset->total_perbaikan ?? 0) > 0)
+                                                <span class="badge bg-warning-subtle text-warning">
+                                                    <i class="ti ti-tool me-1"></i>{{ $asset->total_perbaikan }} Perbaikan
+                                                </span>
+                                            @endif
                                         </div>
                                         <small class="text-muted">Total: <strong>{{ $asset->total_assets }}</strong>
                                             Unit</small>
@@ -110,10 +115,40 @@
                                         </p>
                                     </td>
                                     <td>
-                                        <a href="{{ route('assets.show', ['name' => $asset->name, 'category' => $asset->category_id, 'location' => $asset->location_id]) }}"
-                                            class="btn btn-sm btn-primary d-flex justify-content-center align-items-center gap-1">
-                                            <i class="ti ti-eye"></i> Detail
-                                        </a>
+                                        <div class="dropdown dropstart">
+                                            <a href="#" class="text-muted" id="dropdownMenuButton"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="ti ti-dots fs-5"></i>
+                                            </a>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <li>
+                                                    <a href="{{ route('assets.show', $asset->id) }}"
+                                                        class="dropdown-item d-flex align-items-center gap-3">
+                                                        <i class="fs-4 ti ti-eye"></i>Detail
+                                                    </a>
+                                                </li>
+                                                @if (auth()->user()->isNotPrincipal())
+                                                    <li>
+                                                        <a href="{{ route('assets.edit', $asset->id) }}"
+                                                            class="dropdown-item d-flex align-items-center gap-3">
+                                                            <i class="fs-4 ti ti-pencil"></i>Edit
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <form action="{{ route('assets.destroy', $asset->id) }}"
+                                                            method="POST"
+                                                            onsubmit="return confirm('Yakin ingin menghapus grup aset ini? Semua {{ $asset->total_assets }} aset individual dalam grup akan dihapus.')">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit"
+                                                                class="dropdown-item d-flex align-items-center gap-3">
+                                                                <i class="fs-4 ti ti-trash"></i>Hapus
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                @endif
+                                            </ul>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
